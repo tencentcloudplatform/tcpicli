@@ -91,7 +91,6 @@ func main() {
 		}
 		q := g.FuncMap[action][1:]
 		var query []string
-		// 		os.Setenv("hostId", "752856")
 		for _, v := range q {
 			v = os.Expand(v, os.Getenv)
 			query = append(query, v)
@@ -115,12 +114,14 @@ func main() {
 			for i := 0; i < len(val); i += 2 {
 				name := val[i]
 				typ := val[i+1]
-				re, err := regexp.Compile(`([^\s]+)\s+[^\s]+\s+(.json:"` + name + `".)`)
+				// 				re, err := regexp.Compile(`([^\s]+)\s+[^\s]+\s+(.json:"` + name + `".)`)
+				re, err := regexp.Compile(`(` + gojson.FmtFieldName(name) + `)(.|\n)*(.json:"` + name + `".)`)
 				if err != nil {
 					log.Println(action, name, typ, err.Error())
 					continue
 				}
-				s = re.ReplaceAllString(s, "${1} "+typ+" ${2}")
+				// 				s = re.ReplaceAllString(s, "${1} "+typ+" ${2}")
+				s = re.ReplaceAllString(s, "${1} "+typ+" ${3}")
 			}
 		}
 
@@ -169,7 +170,7 @@ func main() {
 			overwrite = true
 		}
 		if overwrite {
-			err = ioutil.WriteFile(fname, buf.Bytes(), 0644)
+			err = ioutil.WriteFile(fname, []byte(gofmt(buf.String())), 0644)
 			if err != nil {
 				log.Println(action, err.Error())
 				continue
