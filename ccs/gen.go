@@ -17,14 +17,15 @@ func (p *Pkg) DoAction(action string, query ...string) ([]byte, error) {
 
 func main() {
 	region := "echo gz"
-	vpcId := "echo vpc-l89napt5"
-	subnetId := "echo subnet-at7hi4d6"
+	vpcId := "echo vpc-l89napt5"       // need hardcode work
+	subnetId := "echo subnet-at7hi4d6" // need hardcode work
+	clusterID := "apitest"
 	bandwidthType := "echo PayByTraffic"
 	bandwidth := "echo 100"
+	keyId := "echo skey-impvf5cj" // need hardcode work
 	clusterCIDR := "echo 172.16.0.0/16"
 	isVpcGateway := "echo 0"
 	zoneId := "echo 100002"
-	clusterName := "apitest"
 	serviceName := "echo apitestnginx"
 	osName := "echo centos7.2x86_64"
 	nginxImage := "echo nginx:latest"
@@ -35,12 +36,15 @@ func main() {
 	storageSize := "echo 50"
 	rootSize := "echo 50"
 	goodsNum := "echo 1"
+	nodeDeleteMode := "echo Return"
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
 		Seq: []string{
-			`SET clusterID=tcpicli -f "{{range .Data.Clusters}}{{.ClusterID}}{{end}}" ccs DescribeCluster Region=gz clusterName=` + clusterName,
+			`SET clusterID=tcpicli -f "{{range .Data.Clusters}}{{.ClusterID}}{{end}}" ccs DescribeCluster Region=gz clusterName=` + clusterID,
+			`SET serviceName=tcpicli -f ""`,
 			"SET Region=" + region,
 			"SET vpcId=" + vpcId,
+			"SET keyId=" + keyId,
 			"SET subnetId=" + subnetId,
 			"SET bandwidthType=" + bandwidthType,
 			"SET bandwidth=" + bandwidth,
@@ -57,13 +61,18 @@ func main() {
 			"SET nginxImage=" + nginxImage,
 			"SET nginxPort=" + nginxPort,
 			"SET nginxProto=" + nginxProto,
+			"SET nodeDeleteMode=" + nodeDeleteMode,
 			// "CreateCluster",
-			"AddClusterInstances",
+			// "AddClusterInstances",
+			// "AddClusterInstancesFromExistedCvm",
 			// "DescribeCluster",
 			// "DescribeClusterInstances",
-			// "CreateClusterService",
-			// "DeleteClusterService",
+			// "DeleteClusterInstances", // need hardcode work
 			// "DeleteCluster",
+			// "CreateClusterService",
+			// "DescribeClusterService",
+			"DescribeClusterServiceInfo",
+			// "DeleteClusterService",
 		},
 		FuncMap: map[string][]string{
 			"CreateCluster": []string{"457/9444",
@@ -97,13 +106,24 @@ func main() {
 				"rootSize=$rootSize",
 				"goodsNum=$goodsNum",
 			},
+			"AddClusterInstancesFromExistedCvm": []string{"457/9458",
+				"Region=$Region",
+				"clusterId=$clusterID",
+				"instanceIds.0=ins-8x4kmxlw", // hardcode
+				"keyId=$keyId",
+			},
+			"DescribeCluster": []string{"457/9448"},
+			"DescribeClusterInstances": []string{"457/9449",
+				"Region=$Region",
+				"clusterId=$clusterID",
+			},
 			"DeleteClusterInstances": []string{"457/9446",
 				"Region=$Region",
-				"clusterId=$clusterId",
-				"instanceIds.0=",
+				"clusterId=$clusterID",
+				"instanceIds.0=ins-mpomofr6", // hardcode
+				"nodeDeleteMode=$nodeDeleteMode",
 			},
-			"DescribeCluster":          []string{"457/9448"},
-			"DescribeClusterInstances": []string{"457/9449"},
+			"DeleteCluster": []string{"457/9445"},
 			"CreateClusterService": []string{"457/9436",
 				"Region=$Region",
 				"clusterId=$clusterID",
@@ -114,6 +134,14 @@ func main() {
 				"portMappings.0.containerPort=$nginxPort",
 				"portMappings.0.lbPort=$nginxPort",
 				"portMappings.0.protocol=$nginxProto",
+			},
+			"DescribeClusterService": []string{"457/9440",
+				"Region=$Region",
+				"clusterId=$clusterID",
+				"serviceName=$serviceName",
+			},
+			"DescribeClusterServiceInfo": []string{"457/9441",
+				"clusterId=$clusterID",
 			},
 			"DeleteClusterService": []string{"457/9437",
 				"Region=$Region",
