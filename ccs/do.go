@@ -4,7 +4,7 @@ import (
 	"github.com/tencentcloudplatform/tcpicli/core"
 )
 
-var requesturl string = core.Endpoint["ccx"]
+var requesturl string = core.Endpoint["ccs"]
 
 func DoAction(action string, options ...string) ([]byte, error) {
 	region, ok := core.HasRegion(options...)
