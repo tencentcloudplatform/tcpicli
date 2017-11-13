@@ -122,6 +122,48 @@ var (
 			Action:      CdnGetCdnLogList,
 			Description: "referer https://cloud.tencent.com/document/api/228/8087",
 		},
+
+		{
+			Name:        "DescribeCdnHostDetailedInfo",
+			Usage:       "DescribeCdnHostDetailedInfo",
+			Action:      CdnDescribeCdnHostDetailedInfo,
+			Description: "referer https://cloud.tencent.com/document/api/228/3942",
+		},
+
+		{
+			Name:        "GetCdnHostsDetailStatistics",
+			Usage:       "GetCdnHostsDetailStatistics",
+			Action:      CdnGetCdnHostsDetailStatistics,
+			Description: "referer https://cloud.tencent.com/document/api/228/9703",
+		},
+
+		{
+			Name:        "GetCdnStatusCode",
+			Usage:       "GetCdnStatusCode",
+			Action:      CdnGetCdnStatusCode,
+			Description: "referer https://cloud.tencent.com/document/api/228/3943",
+		},
+
+		{
+			Name:        "GetCdnHostsHyStat",
+			Usage:       "GetCdnHostsHyStat",
+			Action:      CdnGetCdnHostsHyStat,
+			Description: "referer https://cloud.tencent.com/document/api/228/7352",
+		},
+
+		{
+			Name:        "GetCdnStatTop",
+			Usage:       "GetCdnStatTop",
+			Action:      CdnGetCdnStatTop,
+			Description: "referer https://cloud.tencent.com/document/api/228/3944",
+		},
+
+		{
+			Name:        "GetCdnProvIspDetailStat",
+			Usage:       "GetCdnProvIspDetailStat",
+			Action:      CdnGetCdnProvIspDetailStat,
+			Description: "referer https://cloud.tencent.com/document/api/228/7356",
+		},
 	}
 )
 
@@ -139,7 +181,11 @@ func CdnDescribeCdnHosts(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	b, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(b))
 	return nil
 }
 
@@ -148,7 +194,11 @@ func CdnAddCdnHost(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	b, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(b))
 	return nil
 }
 
@@ -157,11 +207,11 @@ func CdnGetHostInfoByHost(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
 func CdnGetHostInfoById(c *cli.Context) error {
@@ -185,28 +235,52 @@ func CdnGetHostInfo(c *cli.Context) error {
 }
 
 func CdnOnlineHost(c *cli.Context) error {
-	resp, err := cdn.OnlineHost(c.Args().First())
+	prefix := "host="
+	if _, err := strconv.Atoi(c.Args().First()); err == nil {
+		prefix = "hostId="
+	}
+	resp, err := cdn.OnlineHost(prefix + c.Args().First())
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }
 
 func CdnOfflineHost(c *cli.Context) error {
-	resp, err := cdn.OfflineHost(c.Args().First())
+	prefix := "host="
+	if _, err := strconv.Atoi(c.Args().First()); err == nil {
+		prefix = "hostId="
+	}
+	resp, err := cdn.OfflineHost(prefix + c.Args().First())
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }
 func CdnDeleteCdnHost(c *cli.Context) error {
-	resp, err := cdn.DeleteCdnHost(c.Args().First())
+	prefix := "host="
+	if _, err := strconv.Atoi(c.Args().First()); err == nil {
+		prefix = "hostId="
+	}
+	resp, err := cdn.DeleteCdnHost(prefix + c.Args().First())
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }
 func CdnUpdateCdnConfig(c *cli.Context) error {
@@ -214,7 +288,11 @@ func CdnUpdateCdnConfig(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }
 func CdnUpdateCache(c *cli.Context) error {
@@ -230,7 +308,11 @@ func CdnRefreshCdnUrl(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }
 func CdnRefreshCdnDir(c *cli.Context) error {
@@ -238,7 +320,11 @@ func CdnRefreshCdnDir(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }
 func CdnRefreshCdnOverseaUrl(c *cli.Context) error {
@@ -262,7 +348,11 @@ func CdnGetCdnRefreshLog(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }
 func CdnGetCdnOverseaRefreshLog(c *cli.Context) error {
@@ -287,5 +377,83 @@ func CdnGetCdnLogList(c *cli.Context) error {
 		return err
 	}
 	fmt.Println(string(resp))
+	return nil
+}
+
+func CdnDescribeCdnHostDetailedInfo(c *cli.Context) error {
+	resp, err := cdn.DescribeCdnHostDetailedInfo(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+
+func CdnGetCdnHostsDetailStatistics(c *cli.Context) error {
+	resp, err := cdn.GetCdnHostsDetailStatistics(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+
+func CdnGetCdnStatusCode(c *cli.Context) error {
+	resp, err := cdn.GetCdnStatusCode(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+
+func CdnGetCdnHostsHyStat(c *cli.Context) error {
+	resp, err := cdn.GetCdnHostsHyStat(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+
+func CdnGetCdnStatTop(c *cli.Context) error {
+	resp, err := cdn.GetCdnStatTop(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+
+func CdnGetCdnProvIspDetailStat(c *cli.Context) error {
+	resp, err := cdn.GetCdnProvIspDetailStat(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }

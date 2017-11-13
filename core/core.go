@@ -1,10 +1,15 @@
 package core
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"os"
+	"text/template"
 )
+
+const PWD = `github.com/tencentcloudplatform/tcpicli/core`
 
 func DoAction(service, action string, options ...string) ([]byte, error) {
 	client := NewClient(Endpoint[service], true)
@@ -39,4 +44,38 @@ func DoAction(service, action string, options ...string) ([]byte, error) {
 		}
 	}
 	return b, nil
+}
+
+func FmtOutput(view string, intf interface{}) ([]byte, error) {
+	if _, err := os.Stat(view); !os.IsNotExist(err) {
+		b, err := ioutil.ReadFile(view)
+		if err != nil {
+			return nil, err
+		}
+		view = string(b)
+	}
+	return execTemplate(view, intf)
+}
+
+func execTemplate(tmpl string, body interface{}) ([]byte, error) {
+	j := func(i interface{}) string {
+		b, err := json.MarshalIndent(i, "", "  ")
+		if err != nil {
+			return err.Error()
+		}
+		return string(b)
+	}
+	m := template.FuncMap{
+		"json": j,
+	}
+	t, err := template.New("tmpl").Funcs(m).Parse(tmpl)
+	if err != nil {
+		return nil, err
+	}
+	var buf bytes.Buffer
+	err = t.Execute(&buf, body)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }

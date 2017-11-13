@@ -11,6 +11,7 @@ import (
 
 var VER = "1.0.0"
 var buildtime string
+var formatOut string
 
 func init() {
 }
@@ -25,7 +26,7 @@ func main() {
 		cli.BoolFlag{Name: "vv", Usage: "verbose"},
 		cli.StringFlag{Name: "f", Usage: `filter output
 		Example:
-		tcpicli -f="The status is: {{{.code}}" ccs DescribeCluster
+		tcpicli -f="The status is: {{.code}}" ccs DescribeCluster
 		tcpicli -f="clusterCIDR: {{range .data.clusters}}{{.clusterCIDR}}{{end}}" ccs DescribeCluster
 		tcpicli -f="/path/to/file ccs DescribeCluster"
 		`},
@@ -97,11 +98,14 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 
 func before(c *cli.Context) error {
 	formatFlag := c.String("f")
+	formatOut = formatFlag
 
-	if len(formatFlag) > 0 {
-		core.Inspect(formatFlag, c.Args()[0], c.Args()[1], c.Args()[2:]...)
-		os.Exit(0)
-	}
+	/*
+		if len(formatFlag) > 0 {
+			core.Inspect(formatFlag, c.Args()[0], c.Args()[1], c.Args()[2:]...)
+			os.Exit(0)
+		}
+	*/
 	if c.Bool("vv") {
 		core.Log = log.New(os.Stderr, "[core] ", log.LstdFlags|log.Lshortfile)
 	}
