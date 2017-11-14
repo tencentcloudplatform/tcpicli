@@ -24,13 +24,13 @@ func main() {
 	subnetName0 := "echo tcpclisub0"
 	subnetName1 := "echo tcpclisub1"
 	vpcType := "echo 1"
-
+	vipId := "echo eip-kw5x9v3i"   // hardcode
+	lanIp := "echo 10.104.236.233" // hardcode
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
 		Seq: []string{
 			"SET Region=" + Region,
 			"SET vpcName=" + vpcName,
-			"Set vpcNameMod" + vpcNameMod,
 			"SET cidrBlock=" + cidrBlock,
 			"SET subnetCidr0=" + subnetCidr0,
 			"SET subnetCidr1=" + subnetCidr1,
@@ -39,11 +39,16 @@ func main() {
 			"SET zoneId=" + availabilityZone,
 			"SET vpcType=" + vpcType,
 			// "CreateVpc",
-			`SET vpcId=tcpicli -f `,
+			// `SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx Region=$Region vpcName=$vpcName`,
 			// "DescribeVpcEx",
 			// "DescribeVpcClassicLink",
 			// "DescribeVpcLimit",
-			"ModifyVpcAttribute",
+			"SET vpcNameMod=" + vpcNameMod,
+			// "ModifyVpcAttribute",
+			`SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx Region=$Region vpcName=$vpcNameMod`,
+			"SET vipId=" + vipId, // hardcode
+			"SET lanIp=" + lanIp, // hardcode
+			"AssociateVip",
 		},
 		FuncMap: map[string][]string{
 			"CreateVpc": []string{"215/1309",
@@ -69,6 +74,14 @@ func main() {
 			},
 			"ModifyVpcAttribute": []string{"215/1310",
 				"Region=$Region",
+				"vpcId=$vpcId",
+				"vpcName=$vpcNameMod",
+			},
+			"AssociateVip": []string{"215/1361",
+				"Region=$Region",
+				"vpcId=vpc-oqjioqmj",
+				"vipId=$vipId",
+				"lanIp=$lanIp",
 			},
 		},
 		PkgName: "vpc",

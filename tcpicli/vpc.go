@@ -37,6 +37,18 @@ var (
 			Action:      VpcDescribeVpcLimit,
 			Description: "Referrer: https://cloud.tencent.com/document/215/2112",
 		},
+		{
+			Name:        "ModifyVpcAttribute",
+			Usage:       "Modifies VPC attribute",
+			Action:      VpcModifyVpcAttribute,
+			Description: "Referrer: https://cloud.tencent.com/document/215/1310",
+		},
+		{
+			Name:        "AssociateVip",
+			Usage:       "Binds EIP to instance",
+			Action:      VpcAssociateVip,
+			Description: "Referrer: https://cloud.tencent.com/document/215/1361",
+		},
 		//{
 		//	Name:        "action",
 		//	Usage:       "",
@@ -92,6 +104,30 @@ func VpcDescribeVpcClassicLink(c *cli.Context) error {
 }
 func VpcDescribeVpcLimit(c *cli.Context) error {
 	resp, err := vpc.DescribeVpcLimit(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifyVpcAttribute(c *cli.Context) error {
+	resp, err := vpc.ModifyVpcAttribute(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcAssociateVip(c *cli.Context) error {
+	resp, err := vpc.AssociateVip(c.Args()...)
 	if err != nil {
 		return err
 	}
