@@ -43,11 +43,23 @@ var (
 			Action:      VpcModifyVpcAttribute,
 			Description: "Referrer: https://cloud.tencent.com/document/215/1310",
 		},
+		// {
+		// 	Name:        "AssociateVip",
+		// 	Usage:       "Binds EIP to instance",
+		// 	Action:      VpcAssociateVip,
+		// 	Description: "Referrer: https://cloud.tencent.com/document/215/1361",
+		// },
+		//{
+		//	Name:        "AttachClassicLinkVpc",
+		//	Usage:       "Binds a CVM to a VPC.",
+		//	Action:      VpcAttachClassicLinkVpc,
+		//	Description: "Referrer: https://cloud.tencent.com/document/215/2098",
+		//},
 		{
-			Name:        "AssociateVip",
-			Usage:       "Binds EIP to instance",
-			Action:      VpcAssociateVip,
-			Description: "Referrer: https://cloud.tencent.com/document/215/1361",
+			Name:        "DeleteVpc",
+			Usage:       "Deletes a VPC. Can't have any resources in VPC.",
+			Action:      VpcDeleteVpc,
+			Description: "Referrer: https://cloud.tencent.com/document/215/1307",
 		},
 		//{
 		//	Name:        "action",
@@ -126,8 +138,34 @@ func VpcModifyVpcAttribute(c *cli.Context) error {
 	fmt.Println(r)
 	return nil
 }
-func VpcAssociateVip(c *cli.Context) error {
-	resp, err := vpc.AssociateVip(c.Args()...)
+
+// func VpcAssociateVip(c *cli.Context) error {
+// 	resp, err := vpc.AssociateVip(c.Args()...)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	r, err := resp.String(formatOut)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	fmt.Println(r)
+// 	return nil
+// }
+
+//func VpcAttachClassicLinkVpc(c *cli.Context) error {
+//	resp, err := vpc.AttachClassicLinkVpc(c.Args()...)
+//	if err != nil {
+//		return err
+//	}
+//	r, err := resp.String(formatOut)
+//	if err != nil {
+//		return err
+//	}
+//	fmt.Println(r)
+//	return nil
+//}
+func VpcDeleteVpc(c *cli.Context) error {
+	resp, err := vpc.DeleteVpc(c.Args()...)
 	if err != nil {
 		return err
 	}

@@ -18,14 +18,16 @@ func main() {
 	availabilityZone := "echo 100002"
 	vpcName := "echo initialtcpiclivpc"
 	vpcNameMod := "echo tcpiclivpc"
-	cidrBlock := "echo 192.168.0.0/16"
-	subnetCidr0 := "echo 192.168.0.0/24"
-	subnetCidr1 := "echo 192.168.1.0/24"
+	vpcId := "echo vpc-ncetpc2r"           // hardcode
+	vpcTestInstance := "echo ins-kjhjjaki" // hardcode
+	cidrBlock := "echo 10.0.0.0/16"
+	subnetCidr0 := "echo 10.0.0.0/24"
+	subnetCidr1 := "echo 10.0.1.0/24"
 	subnetName0 := "echo tcpclisub0"
 	subnetName1 := "echo tcpclisub1"
 	vpcType := "echo 1"
-	vipId := "echo eip-kw5x9v3i"   // hardcode
-	lanIp := "echo 10.104.236.233" // hardcode
+	vipId := "echo eip-kw5x9v3i" // hardcode
+	lanIp := "echo "             // hardcode need fix
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
 		Seq: []string{
@@ -39,16 +41,20 @@ func main() {
 			"SET zoneId=" + availabilityZone,
 			"SET vpcType=" + vpcType,
 			// "CreateVpc",
-			// `SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx Region=$Region vpcName=$vpcName`,
+			// `SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx Region=$Region vpcName=$vpcName`, // need to fix vpc package
 			// "DescribeVpcEx",
 			// "DescribeVpcClassicLink",
 			// "DescribeVpcLimit",
 			"SET vpcNameMod=" + vpcNameMod,
+			"SET vpcId=" + vpcId, // hardcode
 			// "ModifyVpcAttribute",
-			`SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx Region=$Region vpcName=$vpcNameMod`,
+			// `SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx Region=$Region vpcName=$vpcNameMod`, // need to fix vpc package
 			"SET vipId=" + vipId, // hardcode
 			"SET lanIp=" + lanIp, // hardcode
-			"AssociateVip",
+			// "AssociateVip",
+			"SET instanceIds.0=" + vpcTestInstance,
+			// "AttachClassicLinkVpc",
+			"DeleteVpc",
 		},
 		FuncMap: map[string][]string{
 			"CreateVpc": []string{"215/1309",
@@ -79,9 +85,18 @@ func main() {
 			},
 			"AssociateVip": []string{"215/1361",
 				"Region=$Region",
-				"vpcId=vpc-oqjioqmj",
+				"vpcId=$vpcId",
 				"vipId=$vipId",
 				"lanIp=$lanIp",
+			},
+			"AttachClassicLinkVpc": []string{"215/2098",
+				"Region=$Region",
+				"vpcId=$vpcId",
+				"instanceIds.0=$vpcTestInstance",
+			},
+			"DeleteVpc": []string{"215/1307",
+				"Region=$Region",
+				"vpcId=$vpcId",
 			},
 		},
 		PkgName: "vpc",
