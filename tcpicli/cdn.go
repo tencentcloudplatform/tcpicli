@@ -376,7 +376,11 @@ func CdnGetCdnLogList(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }
 
