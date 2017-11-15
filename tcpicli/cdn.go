@@ -117,10 +117,13 @@ var (
 			Action: CdnCdnOverseaPushser,
 		},
 		{
-			Name:        "GetCdnLogList",
-			Usage:       "GetCdnLogList",
-			Action:      CdnGetCdnLogList,
-			Description: "referer https://cloud.tencent.com/document/api/228/8087",
+			Name:   "GetCdnLogList",
+			Usage:  "GetCdnLogList",
+			Action: CdnGetCdnLogList,
+			Description: `referer https://cloud.tencent.com/document/api/228/8087
+# download logs with aria2
+tcpicli -f '{{range .Data.List}}{{.Link}}
+{{end}}' cdn GetCdnLogList host=$host|aria2c -i-`,
 		},
 
 		{
