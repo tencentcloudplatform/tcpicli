@@ -9,6 +9,10 @@ import (
 
 type Pkg struct{}
 
+type networkAclEntrySet struct {
+	desc string "networkAclEntrySet.0.desc=tcpicligenerated"
+}
+
 func (p *Pkg) DoAction(action string, query ...string) ([]byte, error) {
 	return DoAction(action, query...)
 }
@@ -39,6 +43,7 @@ func main() {
 	// -- for adding and deleting NACL stuff --
 	networkAclName := "networkAclName=tcpiclinacl"
 	networkAclNameMod := networkAclName + "new"
+	ruleDirectionIn := "ruleDirection=1"
 
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
@@ -74,6 +79,7 @@ func main() {
 			"DescribeNetworkAcl",
 			`SET networkAclId=tcpicli -f "{{range .Data}}{{.NetworkAclID}}{{end}}" vpc DescribeNetworkAcl vpcId=$vpcId0 ` + region + " " + networkAclName,
 			"ModifyNetworkAcl",
+			"ModifyNetworkAclEntry",
 			"ModifySubnetAttribute",
 			// -- clean everything up --
 			"DeleteNetworkAcl",
@@ -193,6 +199,12 @@ func main() {
 			"ModifyNetworkAcl": []string{"215/1443",
 				region,
 				networkAclNameMod,
+				"vpcId=$vpcId0",
+				"networkAclId=$networkAclId",
+			},
+			"ModifyNetworkAclEntry": []string{"215/1444",
+				region,
+				ruleDirectionIn,
 				"vpcId=$vpcId0",
 				"networkAclId=$networkAclId",
 			},
