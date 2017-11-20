@@ -31,6 +31,8 @@ func main() {
 	nextHub0 := ""
 	nextType0 := "4"
 	peeringConnectionName := "peeringConnectionName=tcpiclipcx"
+	// -- for modifying subnet attributes --
+	subnetNameMod := "subnetName=tcpclisubmod0"
 	// -- for adding and deleting routes in Subnet API actions --
 	destinationCidrBlockAdd := "routeSet.0.destinationCidrBlock=172.217.6.46/32"
 	nextTypeAdd := "routeSet.0.nextType=" + nextType0
@@ -72,6 +74,7 @@ func main() {
 			"DescribeNetworkAcl",
 			`SET networkAclId=tcpicli -f "{{range .Data}}{{.NetworkAclID}}{{end}}" vpc DescribeNetworkAcl vpcId=$vpcId0 ` + region + " " + networkAclName,
 			"ModifyNetworkAcl",
+			"ModifySubnetAttribute",
 			// -- clean everything up --
 			"DeleteNetworkAcl",
 			"DeleteRoute",
@@ -192,6 +195,12 @@ func main() {
 				networkAclNameMod,
 				"vpcId=$vpcId0",
 				"networkAclId=$networkAclId",
+			},
+			"ModifySubnetAttribute": []string{"215/1313",
+				region,
+				subnetNameMod,
+				"vpcId=$vpcId0",
+				"subnetId=$subnetId0",
 			},
 			"DeleteNetworkAcl": []string{"215/1439",
 				region,

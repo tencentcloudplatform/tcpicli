@@ -74,6 +74,12 @@ var (
 			Description: "Referrer: https://cloud.tencent.com/document/api/215/1371",
 		},
 		{
+			Name:        "ModifySubnetAttribute",
+			Usage:       "Queries subnet list",
+			Action:      VpcModifySubnetAttribute,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1313",
+		},
+		{
 			Name:        "DescribeSubnet",
 			Usage:       "Gives detailed infromation about particular subnet",
 			Action:      VpcDescribeSubnet,
@@ -489,6 +495,18 @@ func VpcDeleteNetworkAcl(c *cli.Context) error {
 }
 func VpcModifyNetworkAcl(c *cli.Context) error {
 	resp, err := vpc.ModifyNetworkAcl(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifySubnetAttribute(c *cli.Context) error {
+	resp, err := vpc.ModifySubnetAttribute(c.Args()...)
 	if err != nil {
 		return err
 	}
