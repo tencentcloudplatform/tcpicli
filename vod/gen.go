@@ -14,25 +14,46 @@ func (p *Pkg) DoAction(action string, query ...string) ([]byte, error) {
 }
 
 func main() {
-	region := "Region=gz"
-	videoType := "videoType=mkv"
-	coverType := "coverType=jpg"
+	fileName := "fileName=test0"
+	fileId := "fileId=4564972818475166253"
+	className := "className=tcpicliclass"
+	classNameMod := className + "new"
 
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
 		Seq: []string{
-			`SET vodSessionKey=tcpicli -f "{{.VodSessionKey}}" vod ApplyUpload ` + region + " " + videoType + " " + coverType,
-			"CommitUpload",
+			// -- hold on upload stuff because it has COS API dependency --
+			// "ApplyUpload",
+			// "CommitUpload",
+
+			"DescribeVodPlayInfo",
+			"GetVideoInfo",
+
+			// "CreateClass",
+			// "DescribeAllClass",
+			// "DescribeClass",
+			// `SET classId=tcpicli -f "{{range .Data}}{{.Info.ID}}{{end}}" vod DescribeAllClass ` + region + " " + className,
+			// "ModifyClass",
+			// "DeleteClass", // doesn't work for some reason. classId=$classId is giving error 1000; invalid param... is API error, not tcpicli bug
 		},
 		FuncMap: map[string][]string{
-			"ApplyUpload": []string{"266/9756",
-				region,
-				videoType,
-				coverType,
+			"DescribeVodPlayInfo": []string{"266/7825",
+				fileName,
 			},
-			"CommitUpload": []string{"266/9757",
-				region,
-				"vodSessionKey=$vodSessionKey",
+			"GetVideoInfo": []string{"266/8586",
+				fileId,
+			},
+			"CreateClass": []string{"266/7812",
+				className,
+			},
+			"ModifyClass": []string{"266/7815",
+				classNameMod,
+				"classId=$classId",
+			},
+			"DescribeAllClass": []string{"266/7813"},
+			"DescribeClass":    []string{"266/7814"},
+			"DeleteClass": []string{"266/7816",
+				"classId=$classId",
 			},
 		},
 		PkgName: "vod",
