@@ -167,6 +167,13 @@ tcpicli -f '{{range .Data.List}}{{.Link}}
 			Action:      CdnGetCdnProvIspDetailStat,
 			Description: "referer https://cloud.tencent.com/document/api/228/7356",
 		},
+
+		{
+			Name:        "GetCdnMiddleSourceList",
+			Usage:       "GetCdnMiddleSourceList",
+			Action:      CdnGetCdnMiddleSourceList,
+			Description: "referer https://cloud.tencent.com/document/api/",
+		},
 	}
 )
 
@@ -454,6 +461,19 @@ func CdnGetCdnStatTop(c *cli.Context) error {
 
 func CdnGetCdnProvIspDetailStat(c *cli.Context) error {
 	resp, err := cdn.GetCdnProvIspDetailStat(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+
+func CdnGetCdnMiddleSourceList(c *cli.Context) error {
+	resp, err := cdn.GetCdnMiddleSourceList(c.Args()...)
 	if err != nil {
 		return err
 	}
