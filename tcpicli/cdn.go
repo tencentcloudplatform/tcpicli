@@ -117,10 +117,13 @@ var (
 			Action: CdnCdnOverseaPushser,
 		},
 		{
-			Name:        "GetCdnLogList",
-			Usage:       "GetCdnLogList",
-			Action:      CdnGetCdnLogList,
-			Description: "referer https://cloud.tencent.com/document/api/228/8087",
+			Name:   "GetCdnLogList",
+			Usage:  "GetCdnLogList",
+			Action: CdnGetCdnLogList,
+			Description: `referer https://cloud.tencent.com/document/api/228/8087
+# download logs with aria2
+tcpicli -f '{{range .Data.List}}{{.Link}}
+{{end}}' cdn GetCdnLogList host=$host|aria2c -i-`,
 		},
 
 		{
@@ -163,6 +166,13 @@ var (
 			Usage:       "GetCdnProvIspDetailStat",
 			Action:      CdnGetCdnProvIspDetailStat,
 			Description: "referer https://cloud.tencent.com/document/api/228/7356",
+		},
+
+		{
+			Name:        "GetCdnMiddleSourceList",
+			Usage:       "GetCdnMiddleSourceList",
+			Action:      CdnGetCdnMiddleSourceList,
+			Description: "referer https://cloud.tencent.com/document/api/",
 		},
 	}
 )
@@ -376,7 +386,11 @@ func CdnGetCdnLogList(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resp))
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }
 
@@ -447,6 +461,19 @@ func CdnGetCdnStatTop(c *cli.Context) error {
 
 func CdnGetCdnProvIspDetailStat(c *cli.Context) error {
 	resp, err := cdn.GetCdnProvIspDetailStat(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+
+func CdnGetCdnMiddleSourceList(c *cli.Context) error {
+	resp, err := cdn.GetCdnMiddleSourceList(c.Args()...)
 	if err != nil {
 		return err
 	}
