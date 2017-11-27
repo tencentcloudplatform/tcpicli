@@ -169,10 +169,15 @@ tcpicli -f '{{range .Data.List}}{{.Link}}
 		},
 
 		{
-			Name:        "GetCdnMiddleSourceList",
-			Usage:       "GetCdnMiddleSourceList",
-			Action:      CdnGetCdnMiddleSourceList,
-			Description: "referer https://cloud.tencent.com/document/api/",
+			Name:   "GetCdnMiddleSourceList",
+			Usage:  "GetCdnMiddleSourceList",
+			Action: CdnGetCdnMiddleSourceList,
+			Description: `
+referer https://cloud.tencent.com/document/api/
+# list without json format
+tcpicli -f '{{range .Data.MiddleSourceList}}{{.}}
+{{end}}' cdn GetCdnMiddleSourceList format=ip_block
+`,
 		},
 	}
 )
