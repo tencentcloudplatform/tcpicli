@@ -140,6 +140,24 @@ var (
 			Description: "Referrer: https://cloud.tencent.com/document/api/215/5118",
 		},
 		{
+			Name:        "CreateDirectConnectGateway",
+			Usage:       "Creates direct connect GW",
+			Action:      VpcCreateDirectConnectGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4824",
+		},
+		{
+			Name:        "DescribeDirectConnectGateway",
+			Usage:       "Queries list of direct connect GW",
+			Action:      VpcDescribeDirectConnectGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4827",
+		},
+		{
+			Name:        "DeleteDirectConnectGateway",
+			Usage:       "Deletes an existing direct connect GW",
+			Action:      VpcDeleteDirectConnectGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4825",
+		},
+		{
 			Name:        "DeleteUserGw",
 			Usage:       "Deletes peered GW.",
 			Action:      VpcDeleteUserGw,
@@ -483,6 +501,42 @@ func VpcDescribeUserGw(c *cli.Context) error {
 }
 func VpcModifyUserGw(c *cli.Context) error {
 	resp, err := vpc.ModifyUserGw(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcCreateDirectConnectGateway(c *cli.Context) error {
+	resp, err := vpc.CreateDirectConnectGateway(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDescribeDirectConnectGateway(c *cli.Context) error {
+	resp, err := vpc.DescribeDirectConnectGateway(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDeleteDirectConnectGateway(c *cli.Context) error {
+	resp, err := vpc.DeleteDirectConnectGateway(c.Args()...)
 	if err != nil {
 		return err
 	}

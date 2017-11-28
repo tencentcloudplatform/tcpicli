@@ -54,6 +54,8 @@ func main() {
 	userGwName := "userGwName=apitest"
 	userGwAddr := "userGwAddr=183.30.0.1"
 	userGwNameMod := "userGwName=apitestmod"
+	// -- direct connect gw stuff --
+	directConnectGatewayName := "directConnectGatewayName=apitest"
 
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
@@ -101,8 +103,12 @@ func main() {
 			"DescribeUserGwVendor",
 			"AddUserGw",
 			"DescribeUserGw",
-			`SET userGwId=tcpicli -f "{{range .Data}}{{.UserGwID}}{{end}}" vpc DescribeUserGw ` + region + " " + userGwName,
+			`SET userGwId=tcpicli -f "{{range .Data}}{{.UserGwID}}{{end}}" vpc DescribeUserGw vpcId=$vpcId0 ` + region + " " + userGwName,
 			"ModifyUserGw",
+			"CreateDirectConnectGateway",
+			"DescribeDirectConnectGateway",
+			`SET directConnectGatewayId=tcpicli -f "{{range .Data}}{{.DirectConnectGatewayID}}{{end}}" vpc DescribeDirectConnectGateway vpcId=$vpcId0 ` + region + " " + directConnectGatewayName,
+			"DeleteDirectConnectGateway",
 			// -- clean everything up --
 			"DeleteUserGw",
 			"DeleteNetworkAcl",
@@ -241,6 +247,21 @@ func main() {
 				region,
 				userGwNameMod,
 				"userGwId=$userGwId",
+			},
+			"CreateDirectConnectGateway": []string{"215/4824",
+				region,
+				directConnectGatewayName,
+				"vpcId=$vpcId0",
+			},
+			"DescribeDirectConnectGateway": []string{"215/4827",
+				region,
+				directConnectGatewayName,
+				"vpcId=$vpcId0",
+			},
+			"DeleteDirectConnectGateway": []string{"215/4827",
+				region,
+				"vpcId=$vpcId0",
+				"directConnectGatewayId=$directConnectGatewayId",
 			},
 			"DeleteUserGw": []string{"215/5117",
 				region,
