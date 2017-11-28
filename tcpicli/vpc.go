@@ -104,10 +104,40 @@ var (
 			Description: "Referrer: https://cloud.tencent.com/document/api/215/1416",
 		},
 		{
+			Name:        "InquiryVpnPrice",
+			Usage:       "Queries the cost of a VPN using period of time and bandwidth",
+			Action:      VpcInquiryVpnPrice,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5104",
+		},
+		{
+			Name:        "DescribeVpnGw",
+			Usage:       "Returns information on existing VPN GWs",
+			Action:      VpcDescribeVpnGw,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5108",
+		},
+		{
+			Name:        "ModifyVpnGw",
+			Usage:       "Changes attributes of existing VPN GWs.",
+			Action:      VpcModifyVpnGw,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5107",
+		},
+		{
 			Name:        "CreateNetworkAcl",
 			Usage:       "Creates a new NACL.",
 			Action:      VpcCreateNetworkAcl,
 			Description: "Referrer: https://cloud.tencent.com/document/api/215/1437",
+		},
+		{
+			Name:        "CreateSubnetAclRule",
+			Usage:       "Binds NACL to subnet.",
+			Action:      VpcCreateNetworkAcl,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1438",
+		},
+		{
+			Name:        "DeteleSubnetAclRule",
+			Usage:       "Unbinds NACL from subnet.",
+			Action:      VpcDeleteNetworkAcl,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1442",
 		},
 		{
 			Name:        "DescribeNetworkAcl",
@@ -120,6 +150,12 @@ var (
 			Usage:       "Changes the name of NACL",
 			Action:      VpcModifyNetworkAcl,
 			Description: "Referrer: https://cloud.tencent.com/document/api/215/1443",
+		},
+		{
+			Name:        "ModifyNetworkAclEntry",
+			Usage:       "Add rules to NACL",
+			Action:      VpcModifyNetworkAclEntry,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1444",
 		},
 		{
 			Name:        "DeleteNetworkAcl",
@@ -361,6 +397,42 @@ func VpcAssociateRouteTable(c *cli.Context) error {
 	fmt.Println(r)
 	return nil
 }
+func VpcInquiryVpnPrice(c *cli.Context) error {
+	resp, err := vpc.InquiryVpnPrice(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDescribeVpnGw(c *cli.Context) error {
+	resp, err := vpc.DescribeVpnGw(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifyVpnGw(c *cli.Context) error {
+	resp, err := vpc.ModifyVpnGw(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
 func VpcCreateVpcPeeringConnection(c *cli.Context) error {
 	resp, err := vpc.CreateVpcPeeringConnection(c.Args()...)
 	if err != nil {
@@ -505,6 +577,42 @@ func VpcModifyNetworkAcl(c *cli.Context) error {
 	fmt.Println(r)
 	return nil
 }
+func VpcModifyNetworkAclEntry(c *cli.Context) error {
+	resp, err := vpc.ModifyNetworkAclEntry(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcCreateSubnetAclRule(c *cli.Context) error {
+	resp, err := vpc.CreateSubnetAclRule(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDeteleSubnetAclRule(c *cli.Context) error {
+	resp, err := vpc.DeteleSubnetAclRule(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
 func VpcModifySubnetAttribute(c *cli.Context) error {
 	resp, err := vpc.ModifySubnetAttribute(c.Args()...)
 	if err != nil {
@@ -517,16 +625,3 @@ func VpcModifySubnetAttribute(c *cli.Context) error {
 	fmt.Println(r)
 	return nil
 }
-
-//func VpcACTION(c *cli.Context) error {
-//	resp, err := vpc.ACTION(c.Args()...)
-//	if err != nil {
-//		return err
-//	}
-//	r, err := resp.String(formatOut)
-//	if err != nil {
-//		return err
-//	}
-//	fmt.Println(r)
-//	return nil
-//}
