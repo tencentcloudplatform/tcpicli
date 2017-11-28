@@ -122,6 +122,30 @@ var (
 			Description: "Referrer: https://cloud.tencent.com/document/api/215/5107",
 		},
 		{
+			Name:        "DescribeUserGwVendor",
+			Usage:       "Acquires information on supported peer GW vendors.",
+			Action:      VpcDescribeUserGwVendor,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5120",
+		},
+		{
+			Name:        "DescribeUserGw",
+			Usage:       "Lists user GWs",
+			Action:      VpcDescribeUserGw,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5119",
+		},
+		{
+			Name:        "ModifyUserGw",
+			Usage:       "Acquires information on supported peer GW vendors.",
+			Action:      VpcModifyUserGw,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5118",
+		},
+		{
+			Name:        "DeleteUserGw",
+			Usage:       "Deletes peered GW.",
+			Action:      VpcDeleteUserGw,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5117",
+		},
+		{
 			Name:        "CreateNetworkAcl",
 			Usage:       "Creates a new NACL.",
 			Action:      VpcCreateNetworkAcl,
@@ -423,6 +447,54 @@ func VpcDescribeVpnGw(c *cli.Context) error {
 }
 func VpcModifyVpnGw(c *cli.Context) error {
 	resp, err := vpc.ModifyVpnGw(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDescribeUserGwVendor(c *cli.Context) error {
+	resp, err := vpc.DescribeUserGwVendor(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDescribeUserGw(c *cli.Context) error {
+	resp, err := vpc.DescribeUserGw(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifyUserGw(c *cli.Context) error {
+	resp, err := vpc.ModifyUserGw(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDeleteUserGw(c *cli.Context) error {
+	resp, err := vpc.DeleteUserGw(c.Args()...)
 	if err != nil {
 		return err
 	}

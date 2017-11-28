@@ -21,11 +21,11 @@ func main() {
 	vpcName0 := "vpcName=tcpiclivpc"
 	vpcName1 := "vpcName=pcxonly"
 	cidrBlock0 := "cidrBlock=10.0.0.0/16"
-	//cidrBlock1 := "cidrBlock=192.168.0.0/16"
+	cidrBlock1 := "cidrBlock=192.168.0.0/16"
 	subnetCidr0 := "subnetSet.0.cidrBlock=10.0.0.0/24"
 	subnetCidr1 := "subnetSet.0.cidrBlock=192.168.0.0/24"
 	subnetName0 := "subnetSet.0.subnetName=tcpclisub0"
-	//subnetName1 := "subnetSet.0.subnetName=tcpclisub1"
+	subnetName1 := "subnetSet.0.subnetName=tcpclisub1"
 	routeTableName := "routeTableName=tcpiclirt"
 	destinationCidrBlock0 := subnetCidr1
 	nextHub0 := ""
@@ -51,6 +51,9 @@ func main() {
 	vpnBandwidth := "bandwidth=5"
 	vpnGwName := "vpnGwNamename=apitest"
 	vpnGwNameMod := "vpnGwName=apitestmod"
+	userGwName := "userGwName=apitest"
+	userGwAddr := "userGwAddr=183.30.0.1"
+	userGwNameMod := "userGwName=apitestmod"
 
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
@@ -60,53 +63,59 @@ func main() {
 			// "AttachClassicLinkVpc",
 			// "DescribeVpcLimit",
 
-			// "CreateVpc",
-			// "DO tcpicli vpc CreateVpc " + region + " " + vpcName1 + " " + cidrBlock1,
+			"CreateVpc",
+			"DO tcpicli vpc CreateVpc " + region + " " + vpcName1 + " " + cidrBlock1,
 			`SET vpcId0=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx ` + region + " " + vpcName0,
-			// "DescribeVpcEx",
+			"DescribeVpcEx",
 			`SET vpcId1=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx ` + region + " " + vpcName1,
-			// "DescribeVpcClassicLink",
-			// "ModifyVpcAttribute",
-			// "CreateSubnet",
-			// "DO tcpicli vpc CreateSubnet vpcId=$vpcId1 " + region + " " + subnetCidr1 + " " + subnetName1 + " " + zoneId,
-			// "DescribeSubnetEx",
+			"DescribeVpcClassicLink",
+			"ModifyVpcAttribute",
+			"CreateSubnet",
+			"DO tcpicli vpc CreateSubnet vpcId=$vpcId1 " + region + " " + subnetCidr1 + " " + subnetName1 + " " + zoneId,
+			"DescribeSubnetEx",
 			`SET subnetId0=tcpicli -f "{{range .Data}}{{.UnSubnetID}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId0 ` + region,
-			// "DescribeSubnet",
+			"DescribeSubnet",
 			`SET subnetId1=tcpicli -f "{{range .Data}}{{.UnSubnetID}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId1 ` + region,
-			// "CreateVpcPeeringConnection",
-			// "DescribeVpcPeeringConnections",
+			"CreateVpcPeeringConnection",
+			"DescribeVpcPeeringConnections",
 			`SET peeringConnectionId=tcpicli -f "{{range .Data}}{{.peeringConnectionId}}{{end}}" vpc DescribeVpcPeeringConnections ` + region + " " + peeringConnectionName,
-			// "CreateRouteTable",
-			// "DescribeRouteTable",
+			"CreateRouteTable",
+			"DescribeRouteTable",
 			`SET routeTableId=tcpicli -f "{{range .Data}}{{.UnRouteTableID}}{{end}}" vpc DescribeRouteTable vpcId=$vpcId0 ` + region + " " + routeTableName,
-			// "ModifyRouteTableAttribute",
-			// "CreateRoute",
-			// "AssociateRouteTable",
-			// "CreateNetworkAcl",
-			// "DescribeNetworkAcl",
+			"ModifyRouteTableAttribute",
+			"CreateRoute",
+			"AssociateRouteTable",
+			"CreateNetworkAcl",
+			"DescribeNetworkAcl",
 			`SET networkAclId=tcpicli -f "{{range .Data}}{{.NetworkAclID}}{{end}}" vpc DescribeNetworkAcl vpcId=$vpcId0 ` + region + " " + networkAclName,
-			// "ModifyNetworkAcl",
-			// "ModifyNetworkAclEntry",
-			// "CreateSubnetAclRule",
-			// "DeteleSubnetAclRule",
-			// "ModifySubnetAttribute",
-			// "InquiryVpnPrice",
+			"ModifyNetworkAcl",
+			"ModifyNetworkAclEntry",
+			"CreateSubnetAclRule",
+			"DeteleSubnetAclRule",
+			"ModifySubnetAttribute",
+			"InquiryVpnPrice",
 			// "CreateVpn", -- API action only supports prepaid 1 month minimum purchase. --
-			"DescribeVpnGw",
-			`SET vpnGwId=tcpicli -f "{{range .Data}}{{.unVpnGwId}}{{end}}" vpc DescribeVpnGw ` + region + " " + vpnGwName,
-			"ModifyVpnGw",
+			// "DescribeVpnGw",
+			// `SET vpnGwId=tcpicli -f "{{range .Data}}{{.unVpnGwId}}{{end}}" vpc DescribeVpnGw ` + region + " " + vpnGwName,
+			// "ModifyVpnGw",
+			"DescribeUserGwVendor",
+			"AddUserGw",
+			"DescribeUserGw",
+			`SET userGwId=tcpicli -f "{{range .Data}}{{.UserGwID}}{{end}}" vpc DescribeUserGw ` + region + " " + userGwName,
+			"ModifyUserGw",
 			// -- clean everything up --
-			// "DeleteNetworkAcl",
-			// "DeleteRoute",
+			"DeleteUserGw",
+			"DeleteNetworkAcl",
+			"DeleteRoute",
 			// -- RT doesn't delete if bound to subnet. No API action to dissociate RT from subnet. RT gets deleted when subnet it is bound to gets deleted. --
-			// "DeleteRouteTable",
-			// "DeleteVpcPeeringConnection",
+			"DeleteRouteTable",
+			"DeleteVpcPeeringConnection",
 			// -- Bound RT gets deleted here. Failure on 'DeleteRouteTable' expected. If regen to 'DeleteRouteTable.go' needed, comment out 'AssociateRouteTable' above  --
-			// "DeleteSubnet",
-			// "DeleteVpc",
+			"DeleteSubnet",
+			"DeleteVpc",
 			// -- clean up manual stuff --
-			// "DO tcpicli vpc DeleteSubnet vpcId=$vpcId1 subnetId=$subnetId1 " + region,
-			// "DO tcpicli vpc DeleteVpc vpcId=$vpcId1 " + region,
+			"DO tcpicli vpc DeleteSubnet vpcId=$vpcId1 subnetId=$subnetId1 " + region,
+			"DO tcpicli vpc DeleteVpc vpcId=$vpcId1 " + region,
 		},
 		FuncMap: map[string][]string{
 			"CreateVpc": []string{"215/1309",
@@ -221,6 +230,26 @@ func main() {
 				vpnGwNameMod,
 				"vpcId=$vpcId0",
 				"vpnGwId=$vpnGwId",
+			},
+			"DescribeUserGwVendor": []string{"215/5120",
+				region,
+			},
+			"DescribeUserGw": []string{"215/5119",
+				region,
+			},
+			"ModifyUserGw": []string{"215/5118",
+				region,
+				userGwNameMod,
+				"userGwId=$userGwId",
+			},
+			"DeleteUserGw": []string{"215/5117",
+				region,
+				"userGwId=$userGwId",
+			},
+			"AddUserGw": []string{"215/5116",
+				region,
+				userGwName,
+				userGwAddr,
 			},
 			"CreateNetworkAcl": []string{"215/1437",
 				region,
