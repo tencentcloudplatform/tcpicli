@@ -69,6 +69,11 @@ func main() {
 	natName := "natName=apitest"
 	natNameNew := "natName=apitestnew"
 	autoAllocEipNum := "autoAllocEipNum=1"
+	// -- ENI stuff --
+	eniName := "eniName=apitest"
+	eniDescription := "eniDescription=createdbyapi" // just do this instead of changing the name like for everything else
+	eniPrimaryIp := "privateIpAddressSet.0.primary=true"
+	privateIpAddress := "privateIpAddressSet.0.privateIpAddress=10.0.0.10"
 
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
@@ -134,7 +139,12 @@ func main() {
 			"ModifyNatGateway",
 			"EipBindNatGateway",
 			// "EipUnBindNatGateway",
+			"CreateNetworkInterface",
+			"DescribeNetworkInterfaces",
+			`SET networkInterfaceId=tcpcli -f "{{range .Data.Data}}{{.networkInterfaceId}}{{end}}" vpc DescribeNetworkInterfaces vpcId=$vpcId0 ` + region + " " + eniName,
+			"ModifyNetworkInterface",
 			// -- clean everything up --
+			"DeleteNetworkInterface",
 			"DeleteNatGateway",
 			"DeleteLocalIPTranslationNatRule",
 			"DeleteDirectConnectGateway",
@@ -354,6 +364,29 @@ func main() {
 				"vpcId=$vpcId0",
 				"natId=$natId",
 				"assignedEipSet=$originalEipSet",
+			},
+			"CreateNetworkInterface": []string{"215/4811",
+				region,
+				eniName,
+				eniPrimaryIp,
+				privateIpAddress,
+				"vpcId=$vpcId0",
+				"subnetId=$subnetId0",
+			},
+			"DescribeNetworkInterfaces": []string{"215/4814",
+				region,
+				eniName,
+			},
+			"ModifyNetworkInterface": []string{"215/5372",
+				region,
+				eniDescription,
+				"networkInterfaceId=$networkInterfaceId",
+				"vpcId=$vpcId0",
+			},
+			"DeleteNetworkInterface": []string{"215/4813",
+				region,
+				"networkInterfaceId=$networkInterfaceId",
+				"vpcId=$vpcId0",
 			},
 			"DeleteNatGateway": []string{"215/4087",
 				region,

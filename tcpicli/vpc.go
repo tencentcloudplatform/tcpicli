@@ -205,6 +205,18 @@ var (
 		// 	Action:      VpcEipUnBindNatGateway,
 		// 	Description: "Referrer: https://cloud.tencent.com/document/api/215/4092",
 		// },
+		// {
+		// 	Name:        "CreateNetworkInterface",
+		// 	Usage:       "Creates ENI on specified subnet",
+		// 	Action:      VpcCreateNetworkInterface,
+		// 	Description: "Referrer: https://cloud.tencent.com/document/api/215/4811",
+		// },
+		{
+			Name:        "DescribeNetworkInterfaces",
+			Usage:       "Describes ENIs",
+			Action:      VpcDescribeNetworkInterfaces,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4814",
+		},
 		{
 			Name:        "DeleteNatGateway",
 			Usage:       "Deletes a NAT gateway",
@@ -716,6 +728,30 @@ func VpcEipBindNatGateway(c *cli.Context) error {
 // 	fmt.Println(r)
 // 	return nil
 // }
+// func VpcCreateNetworkInterface(c *cli.Context) error {
+// 	resp, err := vpc.CreateNetworkInterface(c.Args()...)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	r, err := resp.String(formatOut)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	fmt.Println(r)
+// 	return nil
+// }
+func VpcDescribeNetworkInterfaces(c *cli.Context) error {
+	resp, err := vpc.DescribeNetworkInterfaces(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
 func VpcDeleteNatGateway(c *cli.Context) error {
 	resp, err := vpc.DeleteNatGateway(c.Args()...)
 	if err != nil {
