@@ -152,6 +152,78 @@ var (
 			Description: "Referrer: https://cloud.tencent.com/document/api/215/4827",
 		},
 		{
+			Name:        "ModifyDirectConnectGateway",
+			Usage:       "Changes attribute of direct connect GW",
+			Action:      VpcModifyDirectConnectGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4826",
+		},
+		{
+			Name:        "CreateLocalIPTranslationNatRule",
+			Usage:       "Creates a NAT rule on a direct connect GW",
+			Action:      VpcCreateLocalIPTranslationNatRule,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5185",
+		},
+		{
+			Name:        "DescribeLocalIPTranslationNatRule",
+			Usage:       "Describes a NAT rule on a direct connect GW",
+			Action:      VpcDescribeLocalIPTranslationNatRule,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5188",
+		},
+		{
+			Name:        "InquiryNatPrice",
+			Usage:       "Returns the cost of a NAT GW given n-concurrent connections",
+			Action:      VpcInquiryNatPrice,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4091",
+		},
+		{
+			Name:        "CreateNatGateway",
+			Usage:       "Creates a NAT gateway",
+			Action:      VpcCreateNatGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4094",
+		},
+		{
+			Name:        "DescribeNatGateway",
+			Usage:       "Describes a NAT gateway",
+			Action:      VpcDescribeNatGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4088",
+		},
+		{
+			Name:        "ModifyNatGateway",
+			Usage:       "Modifies a NAT gateway",
+			Action:      VpcModifyNatGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4086",
+		},
+		{
+			Name:        "EipBindNatGateway",
+			Usage:       "Binds EIP to a  NAT gateway",
+			Action:      VpcEipBindNatGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4093",
+		},
+		// {
+		// 	Name:        "EipUnBindNatGateway",
+		// 	Usage:       "Unbinds EIP from a NAT gateway",
+		// 	Action:      VpcEipUnBindNatGateway,
+		// 	Description: "Referrer: https://cloud.tencent.com/document/api/215/4092",
+		// },
+		{
+			Name:        "DeleteNatGateway",
+			Usage:       "Deletes a NAT gateway",
+			Action:      VpcDeleteNatGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4087",
+		},
+		{
+			Name:        "ModifyLocalIPTranslationNatRule",
+			Usage:       "Modifies a NAT rule on a direct connect GW",
+			Action:      VpcModifyLocalIPTranslationNatRule,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5187",
+		},
+		{
+			Name:        "DeleteLocalIPTranslationNatRule",
+			Usage:       "Deletes a NAT rule on a direct connect GW",
+			Action:      VpcDeleteLocalIPTranslationNatRule,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5186",
+		},
+		{
 			Name:        "DeleteDirectConnectGateway",
 			Usage:       "Deletes an existing direct connect GW",
 			Action:      VpcDeleteDirectConnectGateway,
@@ -525,6 +597,151 @@ func VpcCreateDirectConnectGateway(c *cli.Context) error {
 }
 func VpcDescribeDirectConnectGateway(c *cli.Context) error {
 	resp, err := vpc.DescribeDirectConnectGateway(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifyDirectConnectGateway(c *cli.Context) error {
+	resp, err := vpc.ModifyDirectConnectGateway(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcCreateLocalIPTranslationNatRule(c *cli.Context) error {
+	resp, err := vpc.CreateLocalIPTranslationNatRule(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDescribeLocalIPTranslationNatRule(c *cli.Context) error {
+	resp, err := vpc.DescribeLocalIPTranslationNatRule(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcInquiryNatPrice(c *cli.Context) error {
+	resp, err := vpc.InquiryNatPrice(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcCreateNatGateway(c *cli.Context) error {
+	resp, err := vpc.CreateNatGateway(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDescribeNatGateway(c *cli.Context) error {
+	resp, err := vpc.DescribeNatGateway(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifyNatGateway(c *cli.Context) error {
+	resp, err := vpc.ModifyNatGateway(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcEipBindNatGateway(c *cli.Context) error {
+	resp, err := vpc.EipBindNatGateway(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+
+// func VpcEipUnBindNatGateway(c *cli.Context) error {
+// 	resp, err := vpc.EipBindNatGateway(c.Args()...)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	r, err := resp.String(formatOut)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	fmt.Println(r)
+// 	return nil
+// }
+func VpcDeleteNatGateway(c *cli.Context) error {
+	resp, err := vpc.DeleteNatGateway(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifyLocalIPTranslationNatRule(c *cli.Context) error {
+	resp, err := vpc.ModifyLocalIPTranslationNatRule(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDeleteLocalIPTranslationNatRule(c *cli.Context) error {
+	resp, err := vpc.DeleteLocalIPTranslationNatRule(c.Args()...)
 	if err != nil {
 		return err
 	}
