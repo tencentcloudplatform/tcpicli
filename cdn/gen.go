@@ -46,6 +46,7 @@ func main() {
 			"GetCdnHostsHyStat",
 			"GetCdnStatTop",
 			"GetCdnProvIspDetailStat",
+			"GetCdnLogList",
 			"DO sleep 300",
 			"OfflineHost",
 			"DO sleep 300",
@@ -54,6 +55,7 @@ func main() {
 			"OfflineHost",
 			"DO sleep 300",
 			"DeleteCdnHost",
+			"GetCdnMiddleSourceList",
 		},
 		SliceOptions: map[string]string{
 			"GetHostInfoByHost": "hosts",
@@ -93,6 +95,8 @@ func main() {
 			"GetCdnHostsHyStat":           []string{"228/7352", date, "statType=bandwidth"},
 			"GetCdnStatTop":               []string{"228/3944", startDate, endDate, "statType=flux", "projects.0=$projectId"},
 			"GetCdnProvIspDetailStat":     []string{"228/7356", date, "hosts.0=" + domain},
+			"GetCdnLogList":               []string{"228/8087", "host=" + domain},
+			"GetCdnMiddleSourceList":      []string{"", "format=ip_block"},
 		},
 		FixStruct: map[string][]string{
 			"DescribeCdnHosts":            []string{"cos_key", "interface{}", "pid_config", "interface{}", "final_pids", "interface{}"},
