@@ -83,6 +83,11 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 			Subcommands: funcDfw,
 		},
 		{
+			Name:        "vod",
+			Usage:       "Video on Demand",
+			Subcommands: funcVod,
+		},
+		{
 			Name:        "account",
 			Usage:       "account function",
 			Subcommands: funcAccount,
