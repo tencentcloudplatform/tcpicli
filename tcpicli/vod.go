@@ -133,6 +133,66 @@ var (
 			Action:      VodModifyVodInfo,
 			Description: "referrer: https://cloud.tencent.com/document/api/266/7828",
 		},
+		{
+			Name:        "DescribeVodStorage",
+			Usage:       "Describes VOD storage",
+			Action:      VodDescribeVodStorage,
+			Description: "referrer: https://cloud.tencent.com/document/api/266/10012",
+		},
+		{
+			Name:        "GetPlayStatLogList",
+			Usage:       "Returns log data",
+			Action:      VodGetPlayStatLogList,
+			Description: "referrer: https://cloud.tencent.com/document/api/266/12624",
+		},
+		{
+			Name:        "ProcessFile",
+			Usage:       "Processes VOD file.",
+			Action:      VodProcessFile,
+			Description: "referrer: https://cloud.tencent.com/document/api/266/9642",
+		},
+		{
+			Name:        "GetTaskList",
+			Usage:       "Returns VOD Task List.",
+			Action:      VodGetTaskList,
+			Description: "referrer: https://cloud.tencent.com/document/api/266/11722",
+		},
+		{
+			Name:        "ConvertVodFile",
+			Usage:       "Converts VOD file",
+			Action:      VodConvertVodFile,
+			Description: "referrer: https://cloud.tencent.com/document/api/266/7822",
+		},
+		{
+			Name:        "ClipVideo",
+			Usage:       "Creates cut of video and writes to a new file",
+			Action:      VodClipVideo,
+			Description: "referrer: https://cloud.tencent.com/document/api/266/10156",
+		},
+		{
+			Name:        "GetTaskInfo",
+			Usage:       "Specifies info about specific task",
+			Action:      VodGetTaskInfo,
+			Description: "referrer: https://cloud.tencent.com/document/api/266/11724",
+		},
+		{
+			Name:        "RedoTask",
+			Usage:       "Redoes task by vodTaskId",
+			Action:      VodRedoTask,
+			Description: "referrer: https://cloud.tencent.com/document/api/266/11725",
+		},
+		{
+			Name:        "ConcatVideo",
+			Usage:       "Splices uploaded videos together",
+			Action:      VodConcatVideo,
+			Description: "referrer: https://cloud.tencent.com/document/api/266/7821",
+		},
+		{
+			Name:        "DeleteVodFile",
+			Usage:       "Deletes specified VOD file.",
+			Action:      VodDeleteVodFile,
+			Description: "referrer: https://cloud.tencent.com/document/api/266/7838",
+		},
 	}
 )
 
@@ -374,6 +434,126 @@ func VodDeleteVodTags(c *cli.Context) error {
 }
 func VodModifyVodInfo(c *cli.Context) error {
 	resp, err := vod.ModifyVodInfo(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VodDescribeVodStorage(c *cli.Context) error {
+	resp, err := vod.DescribeVodStorage(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VodGetPlayStatLogList(c *cli.Context) error {
+	resp, err := vod.GetPlayStatLogList(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VodProcessFile(c *cli.Context) error {
+	resp, err := vod.ProcessFile(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VodGetTaskList(c *cli.Context) error {
+	resp, err := vod.GetTaskList(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VodConvertVodFile(c *cli.Context) error {
+	resp, err := vod.ConvertVodFile(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VodClipVideo(c *cli.Context) error {
+	resp, err := vod.ClipVideo(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VodGetTaskInfo(c *cli.Context) error {
+	resp, err := vod.GetTaskInfo(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VodRedoTask(c *cli.Context) error {
+	resp, err := vod.RedoTask(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VodConcatVideo(c *cli.Context) error {
+	resp, err := vod.ConcatVideo(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VodDeleteVodFile(c *cli.Context) error {
+	resp, err := vod.DeleteVodFile(c.Args()...)
 	if err != nil {
 		return err
 	}

@@ -38,6 +38,20 @@ func main() {
 	transcodeCommentMod := "comment=apitestmod"                                       // UpdateTranscodeTemplate
 	tags := "tags.1=apitest"                                                          // CreateVodTags // 1 index -_-
 	vodDescriptionMod := "fileIntro=apitestmod"                                       // ModifyVodInfo // fileIntro... *sigh*
+	playFrom := "from=2017-12-01"                                                     // GetPlayStatLogList
+	playTo := "to=2017-12-02"                                                         // GetPlayStatLogList
+	inputType := "inputType=SingleFile"                                               // RunProcedure
+	fileStartTimeOffset := "file.startTimeOffset=2"                                   // RunProcedure
+	fileEndTimeOffset := "file.endTimeOffset=4"                                       // RunProcedure
+	procedure := "procedure=SomeProcedure"                                            // RunProcedure
+	sampleSnapshot := "sampleSnapshot.definition=5"                                   // ProcessFile
+	taskStatus := "status=FINISH"                                                     // GetTaskList
+	newFileName := "fileName=madebyapi"                                               // ClipVideo
+	startTimeOffset := "startTimeOffset=2"                                            // ClipVideo
+	endTimeOffset := "endTimeOffset=4"                                                // ClipVideo
+	concatFileName := "name=concatviaapi"                                             // ConcatVideo
+	dstType := "dstType.0=mp4"                                                        // ConcatVideo
+	delPriority := "priority=0"                                                       // DeleteVodFile
 
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
@@ -48,34 +62,36 @@ func main() {
 			// "MultiPullVodFile",
 			// "ApplyUploadWatermark",
 
-			// "RunProcedure",
-			// "ProcessFile",
-			// "ConvertVodFile",
-			// "ClipVideo",
-			// "ConcatVideo",
-			// "CreateSnapshotByTimeOffset",
-			// "CreateImageSprite",
 			"DescribeVodPlayInfo",
 			`SET fileId=tcpicli -f "{{range .FileSet}}{{.FileID}}{{end}}" vod DescribeVodPlayInfo ` + region + " " + fileName,
 			`SET vid=echo $fileId`, // stupid -- two variables, one value ;)
+			// "RunProcedure", // Don't understand
+			"ProcessFile",
+			"ConvertVodFile",
+			"ClipVideo", // uncomment after complete
+			`SET clipFileId=tcpicli -f "{{range .FileSet}}{{.FileID}}{{end}}" vod DescribeVodPlayInfo ` + region + " " + newFileName,
+			"ConcatVideo",
+			`SET concatFileId=tcpicli -f "{{range .FileSet}}{{.FileID}}{{end}}" vod DescribeVodPlayInfo ` + region + " " + concatFileName,
+			// "CreateSnapshotByTimeOffset",
+			// "CreateImageSprite",
 			"GetVideoInfo",
 			"DescribeRecordPlayInfo",
 			"CreateVodTags",
 			"DeleteVodTags",
-			// "DeleteVodFile",
-			// "ModifyVodInfo",
+			"ModifyVodInfo",
 			"CreateClass",
 			"DescribeAllClass",
 			"DescribeClass",
-			// inspect for vod sucks because API doesn't allow you to filter by className or name or anything descriptive; only barfs all classes at you. there is an immortal default class, therefore, to filter I need to use bash...
+			// inspect for vod/class sucks because API doesn't allow you to filter by className or name or anything descriptive; only barfs all classes at you. there is an immortal default class, therefore, to filter I need to use bash...
 			`SET classId=tcpicli vod DescribeClass ` + region + " | grep -B1 $(echo " + className + " | cut -d '=' -f2)" + ` | grep -v name | awk '{ print $2 }' | tr -d "\","`,
 			"ModifyClass",
 			"DeleteClass",
-			// "PullEvent",
-			// "ConfirmEvent",
-			// "GetTaskList",
-			// "GetTaskInfo",
-			// "RedoTask",
+			// "PullEvent", // Don't undertstand
+			// "ConfirmEvent", // Don't understand
+			"GetTaskList",
+			`SET vodTaskId=tcpicli -f "{{with index .Data.TaskList 1}}{{.VodTaskID}}{{end}}" vod GetTaskList ` + region + " " + taskStatus, // pull any value to gen 'GetTaskInfo'
+			"GetTaskInfo",
+			"RedoTask", // Redoing task using the same finished taskid as 'GetTaskInfo'... don't know, don't care ;)
 			"CreateTranscodeTemplate",
 			"QueryTranscodeTemplateList",
 			`SET transcodeDefinition=tcpicli -f "{{range .Data}}{{.Definition}}{{end}}" vod QueryTranscodeTemplateList`,
@@ -88,9 +104,10 @@ func main() {
 			"QueryWatermarkTemplate",
 			"UpdateWatermarkTemplate",
 			"DeleteWatermarkTemplate",
-			"DescribeDrmDataKey",
-			// "DescribeVodStorage",
-			// "GetPlayStatLogList",
+			// "DescribeDrmDataKey", // don't understand
+			"DescribeVodStorage",
+			"GetPlayStatLogList",
+			"DeleteVodFile",
 		},
 		FuncMap: map[string][]string{
 			// -- hold on upload stuff because it has COS API dependency --
@@ -99,11 +116,37 @@ func main() {
 			// "MultiPullVodFile":           []string{"266/7817"},
 			// "ApplyUploadWatermark":       []string{"266/11607"},
 
-			"RunProcedure":               []string{"266/11030"},
-			"ProcessFile":                []string{"266/9642"},
-			"ConvertVodFile":             []string{"266/7822"},
-			"ClipVideo":                  []string{"266/10156"},
-			"ConcatVideo":                []string{"266/7821"},
+			"RunProcedure": []string{"266/11030",
+				region,
+				inputType,
+				fileStartTimeOffset,
+				fileEndTimeOffset,
+				procedure,
+				"file.id=$fileId",
+			},
+			"ProcessFile": []string{"266/9642",
+				region,
+				sampleSnapshot,
+				"fileId=$fileId",
+			},
+			"ConvertVodFile": []string{"266/7822",
+				region,
+				"fileId=$fileId",
+			},
+			"ClipVideo": []string{"266/10156",
+				region,
+				startTimeOffset,
+				endTimeOffset,
+				newFileName,
+				"fileId=$fileId",
+			},
+			"ConcatVideo": []string{"266/7821",
+				region,
+				concatFileName,
+				dstType,
+				"srcFileList.0.fileId=$fileId",
+				"srcFileList.1.fileId=$clipFileId",
+			},
 			"CreateSnapshotByTimeOffset": []string{"266/8102"},
 			"CreateImageSprite":          []string{"266/8101"},
 			"GetVideoInfo": []string{"266/8586",
@@ -128,7 +171,11 @@ func main() {
 				tags,
 				"fileId=$fileId",
 			},
-			"DeleteVodFile": []string{"266/7838"},
+			"DeleteVodFile": []string{"266/7838",
+				region,
+				delPriority,
+				"fileId=$fileId",
+			},
 			"ModifyVodInfo": []string{"266/7828",
 				region,
 				vodDescriptionMod,
@@ -153,11 +200,22 @@ func main() {
 				region,
 				"classId=$classId",
 			},
-			"PullEvent":    []string{"266/7818"},
+			"PullEvent": []string{"266/7818",
+				region,
+			},
 			"ConfirmEvent": []string{"266/7819"},
-			"GetTaskList":  []string{"266/11722"},
-			"GetTaskInfo":  []string{"266/11724"},
-			"RedoTask":     []string{"266/11725"},
+			"GetTaskList": []string{"266/11722",
+				region,
+				taskStatus,
+			},
+			"GetTaskInfo": []string{"266/11724",
+				region,
+				"vodTaskId=$vodTaskId",
+			},
+			"RedoTask": []string{"266/11725",
+				region,
+				"vodTaskId=$vodTaskId",
+			},
 			"CreateTranscodeTemplate": []string{"266/9910",
 				region,
 				transcodeName,
@@ -216,7 +274,10 @@ func main() {
 			},
 			"DescribeDrmDataKey": []string{"266/9643"},
 			"DescribeVodStorage": []string{"266/10012"},
-			"GetPlayStatLogList": []string{"266/12624"},
+			"GetPlayStatLogList": []string{"266/12624",
+				playFrom,
+				playTo,
+			},
 		},
 		PkgName: "vod",
 		Pkg:     new(Pkg),
