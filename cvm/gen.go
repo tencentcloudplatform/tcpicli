@@ -4,154 +4,90 @@ package main
 
 import (
 	. "."
-	"bytes"
-	"fmt"
-	"github.com/ChimeraCoder/gojson"
-	"io/ioutil"
-	"log"
-	"strings"
-	"text/template"
-	"time"
+	"github.com/tencentcloudplatform/tcpicli/autogen"
 )
 
-var (
-	docRoot   = "https://cloud.tencent.com/document/api/"
-	queryName = fmt.Sprintf("query%d", time.Now().Unix())
-	seq       = []string{
-		"DescribeRegions", //
-		"DescribeZones", //
-		"DescribeInstances",
-		// "DescribeInstanceStatus",
-		// "InquiryPriceRunInstances",
-		// "DescribeInstanceTypeConfigs",
-		"StartInstances", //
-		"StopInstances",
-		"TerminateInstances",
-		"ResetInstance",
-		"RebootInstances",
-		"InquiryPriceResetInstance",
-		"ResizeInstanceDisks",
-		"RenewInstances",
-		"InquiryPriceResizeInstanceDisks",
-		"InquiryPriceRenewInstances",
-		"ResetInstancesType",
-		"InquiryPriceResetInstancesInternetMaxBandwidth",
-		"InquiryPriceResetInstancesType",
-		"ModifyInstancesRenewFlag",
-		"ModifyInstancesAttribute",
-		"ResetInstancesInternetMaxBandwidth",
-		"ModifyInstancesProject",
-		"UpdateInstanceVpcConfig",
-		"ResetInstancesPassword",
-		"DescribeInstanceInternetBandwidthConfigs",
-	}
-	funcMap = map[string][]string{
-		"DescribeRegions":                                 []string{"213/9456"},
-		"DescribeZones":                                   []string{"213/9455"},
-		"DescribeInstances":                               []string{"213/9388"},
-		// "DescribeInstanceStatus":                          []string{"213/9389", reqUrl},
-		// "InquiryPriceRunInstances":                        []string{"213/9391"},
-		// "DescribeInstanceTypeConfigs":                     []string{"213/9391"},
-		"StartInstances":                                  []string{"213/9386"},
-		"StopInstances":                                   []string{"213/9383"},
-		"TerminateInstances":                              []string{"213/9395"},
-		"ResetInstance":                                   []string{"213/9398"},
-		"RebootInstances":                                 []string{"213/9396"},
-		"InquiryPriceResetInstance":                       []string{"213/9490"},
-		"ResizeInstanceDisks":                             []string{"213/9387"},
-		"RenewInstances":                                  []string{"213/9392"},
-		"InquiryPriceResizeInstanceDisks":                 []string{"213/9487"},
-		"InquiryPriceRenewInstances":                      []string{"213/9491"},
-		"ResetInstancesType":                              []string{"213/9394"},
-		"InquiryPriceResetInstancesInternetMaxBandwidth":  []string{"213/9488"},
-		"InquiryPriceResetInstancesType":                  []string{"213/9489"},
-		"ModifyInstancesRenewFlag":                        []string{"213/9382"},
-		"ModifyInstancesAttribute":                        []string{"213/9381"},
-		"ResetInstancesInternetMaxBandwidth":              []string{"213/9393"},
-		"ModifyInstancesProject":                          []string{"213/9380"},
-		"UpdateInstanceVpcConfig":                         []string{"213/9379"},
-		"ResetInstancesPassword":                          []string{"213/9397"},
-		"DescribeInstanceInternetBandwidthConfigs":        []string{"213/9390"},
-	}
-	pkgName = "cvm"
-)
+type Pkg struct{}
+
+func (p *Pkg) DoAction(action string, query ...string) ([]byte, error) {
+	return DoAction(action, query...)
+}
 
 func main() {
-	for _, action := range seq {
-		query := funcMap[action][1:]
-		document := fmt.Sprintf("%s%s", docRoot, funcMap[action][0])
-		fmt.Println("start gen", action)
-		b, err := DoAction(action, query...)
-		if err != nil {
-			log.Println(action, err.Error())
-			continue
-		}
-		str := fmt.Sprintf("%sResp", action)
-		res, err := gojson.Generate(bytes.NewBuffer(b), gojson.ParseJson, str, pkgName, []string{"json"}, false)
-		if err != nil {
-			log.Println(action, err.Error())
-			continue
-		}
-		s := strings.Join(strings.Split(string(res), "\n")[1:], "\n")
+	region := "Region=bj" // common input param
 
-		var buf bytes.Buffer
-		packageTemplate.Execute(&buf, struct {
-			Timestamp time.Time
-			PkgName   string
-			Action    string
-			Struct    string
-			Document  string
-		}{
-			Timestamp: time.Now(),
-			PkgName:   pkgName,
-			Action:    action,
-			Struct:    s,
-			Document:  document,
-		})
-		var overwrite bool
-		fname := action + ".go"
-		current, err := ioutil.ReadFile(fname)
-		if err != nil {
-			overwrite = true
-		}
-		currentS := strings.Join(strings.Split(string(current), "\n")[1:], "\n")
-		bufS := strings.Join(strings.Split(buf.String(), "\n")[1:], "\n")
-		if !overwrite && currentS != bufS {
-			overwrite = true
-		}
-		if overwrite {
-			err = ioutil.WriteFile(fname, buf.Bytes(), 0644)
-			if err != nil {
-				log.Println(action, err.Error())
-				continue
-			}
-			fmt.Println("finish gen", action)
-		} else {
-			fmt.Println("finish nochange", action)
-		}
+	gen := &autogen.Gen{
+		DocRoot: "https://cloud.tencent.com/document/api/",
+		Seq: []string{
+			"DescribeInstances",
+			// "DescribeInstancesStatus",
+			// "RunInstances",
+			// "InquiryPriceRunInstances",
+			// "StartInstances",
+			// "StopInstances",
+			// "TerminateInstances",
+			// "RebootInstances",
+			// "ResetInstance",
+			// "InquiryPriceResetInstance",
+			// "ResizeInstanceDisks",
+			// "InquiryPriceResizeInstanceDisks",
+			// "RenewInstances",
+			// "InquiryPriceRenewInstances",
+			// "ResetInstancesType",
+			// "InquiryPriceResetInstancesType",
+			// "ModifyInstancesRenewFlag",
+			// "ModifyInstancesAttribute",
+			// "ResetInstancesInternetMaxBandwidth",
+			// "ModifyInstancesProject",
+			// "UpdateInstanceVpcConfig",
+			// "ResetInstancesPassword",
+			// "DescribeInstanceInternetBandwidthConfigs",
+			// "DescribeImages",
+			// "CreateImage",
+			// "DeleteImages",
+			// "ModifyImageAttribute",
+			// "SyncImages",
+			// "ModifyImageSharePermission",
+			// "DescribeImageSharePermission",
+			// "AttachNetworkInterface",
+			// "DescribeSecurityGroups",
+			// "CreateSecurityGroup",
+			// "DeleteSecurityGroup",
+			// "ModifySecurityGroupAttribute",
+			// "DescribeSecurityGroupPolicy",
+			// "ModifySecurityGroupPolicy",
+			// "DescribeInstancesOfSecurityGroup",
+			// "ModifySecurityGroupsOfInstance",
+			// "DescribeAssociateSecurityGroups",
+			// "DescribeEip",
+			// "DescribeEipQuota",
+			// "ModifyEipAttributes",
+			// "CreateEip",
+			// "DeleteEip",
+			// "EipBindInstance",
+			// "EipUnBindInstance",
+			// "TransformWanIpToEip",
+			// "DescribeKeyPairs",
+			// "CreateKeyPair",
+			// "ModifyKeyPairAttribute",
+			// "DeleteKeyPairs",
+			// "ImportKeyPair",
+			// "AssociateInstancesKeyPairs",
+			// "DisassociateInstancesKeyPairs",
+		},
+		FuncMap: map[string][]string{
+			"RunProcedure": []string{"266/11030",
+				region,
+				inputType,
+				fileStartTimeOffset,
+				fileEndTimeOffset,
+				procedure,
+				"file.id=$fileId",
+			},
+		},
+		PkgName: "cvm",
+		Pkg:     new(Pkg),
 	}
+
+	gen.Run()
 }
-
-var packageTemplate = template.Must(template.New("").Parse(`// {{ .Timestamp }}
-// Code generated by go generate; DO NOT EDIT.
-// This file was generated by robots at
-
-package {{.PkgName}}
-import (
-	"encoding/json"
-)
-
-{{.Struct}}
-
-// Implement {{.Document}}
-func {{.Action}}(options ...string) (*{{.Action}}Resp, error) {
-	resp, err := DoAction("{{.Action}}", options...)
-	if err != nil {
-		return nil, err
-	}
-	var s {{.Action}}Resp
-	err = json.Unmarshal(resp, &s)
-	return &s, err
-}
-
-`))
