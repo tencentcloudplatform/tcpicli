@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/tencentcloudplatform/tcpicli/cvm"
 	"github.com/urfave/cli"
@@ -18,7 +17,7 @@ var (
 			Name:        "DescribeInstances",
 			Usage:       "Describes available instances",
 			Action:      CvmDescribeInstances,
-			Describtion: "Referrer: https://cloud.tencent.com/document/api/213/9388",
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9388",
 		},
 	}
 )
