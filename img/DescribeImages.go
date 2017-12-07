@@ -22,9 +22,10 @@ type DescribeImagesResp struct {
 			ImageState       string      `json:"ImageState"`
 			ImageType        string      `json:"ImageType"`
 			OsName           string      `json:"OsName"`
-		} `json:"ImageSet"`
-		RequestID  string `json:"RequestId"`
-		TotalCount int64  `json:"TotalCount"`
+		} `json:"ImageSet,omitempty"`
+		RequestID  string      `json:"RequestId"`
+		TotalCount int64       `json:"TotalCount,omitempty"`
+		Error      interface{} `json:"Error,omitempty"`
 	} `json:"Response"`
 }
 

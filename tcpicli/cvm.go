@@ -79,6 +79,60 @@ var (
 			Action:      CvmInquiryPriceResizeInstanceDisks,
 			Description: "Referrer: https://cloud.tencent.com/document/api/213/9487",
 		},
+		{
+			Name:        "RenewInstances",
+			Usage:       "Renews a prepaid instance",
+			Action:      CvmRenewInstances,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9392",
+		},
+		{
+			Name:        "InquiryPriceRenewInstances",
+			Usage:       "Checks the price of renewing a prepaid instance",
+			Action:      CvmInquiryPriceRenewInstances,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9491",
+		},
+		{
+			Name:        "ResetInstancesType",
+			Usage:       "Resizes an instance",
+			Action:      CvmResetInstancesType,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9394",
+		},
+		{
+			Name:        "InquiryPriceResetInstancesType",
+			Usage:       "Checks the price of resizing an instance",
+			Action:      CvmInquiryPriceResetInstancesType,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9489",
+		},
+		{
+			Name:        "ModifyInstancesAttribute",
+			Usage:       "Changes the name tag of an instance",
+			Action:      CvmModifyInstancesAttribute,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9381",
+		},
+		{
+			Name:        "ResetInstancesInternetMaxBandwidth",
+			Usage:       "Changes the max bandwidth of an instance",
+			Action:      CvmResetInstancesInternetMaxBandwidth,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9393",
+		},
+		{
+			Name:        "UpdateInstanceVpcConfig",
+			Usage:       "Changes the VPC config of an instance",
+			Action:      CvmUpdateInstanceVpcConfig,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9379",
+		},
+		{
+			Name:        "ResetInstancesPassword",
+			Usage:       "Changes the instance password",
+			Action:      CvmResetInstancesPassword,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9397",
+		},
+		{
+			Name:        "DescribeInstanceInternetBandwidthConfigs",
+			Usage:       "Describes prepaid instances bandwidth configuration",
+			Action:      CvmDescribeInstanceInternetBandwidthConfigs,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9390",
+		},
 	}
 )
 
@@ -212,6 +266,114 @@ func CvmResizeInstanceDisks(c *cli.Context) error {
 }
 func CvmInquiryPriceResizeInstanceDisks(c *cli.Context) error {
 	resp, err := cvm.InquiryPriceResizeInstanceDisks(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmRenewInstances(c *cli.Context) error {
+	resp, err := cvm.RenewInstances(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmInquiryPriceRenewInstances(c *cli.Context) error {
+	resp, err := cvm.InquiryPriceRenewInstances(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmResetInstancesType(c *cli.Context) error {
+	resp, err := cvm.ResetInstancesType(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmInquiryPriceResetInstancesType(c *cli.Context) error {
+	resp, err := cvm.InquiryPriceResetInstancesType(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmModifyInstancesAttribute(c *cli.Context) error {
+	resp, err := cvm.ModifyInstancesAttribute(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmResetInstancesInternetMaxBandwidth(c *cli.Context) error {
+	resp, err := cvm.ResetInstancesInternetMaxBandwidth(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmUpdateInstanceVpcConfig(c *cli.Context) error {
+	resp, err := cvm.UpdateInstanceVpcConfig(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmResetInstancesPassword(c *cli.Context) error {
+	resp, err := cvm.ResetInstancesPassword(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmDescribeInstanceInternetBandwidthConfigs(c *cli.Context) error {
+	resp, err := cvm.DescribeInstanceInternetBandwidthConfigs(c.Args()...)
 	if err != nil {
 		return err
 	}

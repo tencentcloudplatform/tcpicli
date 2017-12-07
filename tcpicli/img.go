@@ -19,6 +19,18 @@ var (
 			Action:      ImgDescribeImages,
 			Description: "Referrer: https://cloud.tencent.com/document/api/213/9418",
 		},
+		{
+			Name:        "CreateImage",
+			Usage:       "Creates images from stopped instance",
+			Action:      ImgCreateImage,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9416",
+		},
+		{
+			Name:        "DeleteImages",
+			Usage:       "Deletes images",
+			Action:      ImgDeleteImages,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9418",
+		},
 	}
 )
 
@@ -32,6 +44,30 @@ func ImgDoAction(c *cli.Context) error {
 }
 func ImgDescribeImages(c *cli.Context) error {
 	resp, err := img.DescribeImages(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func ImgCreateImage(c *cli.Context) error {
+	resp, err := img.CreateImage(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func ImgDeleteImages(c *cli.Context) error {
+	resp, err := img.DeleteImages(c.Args()...)
 	if err != nil {
 		return err
 	}
