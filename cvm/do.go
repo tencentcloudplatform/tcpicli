@@ -7,6 +7,11 @@ import (
 var requesturl string = core.Endpoint["cvm"]
 
 func DoAction(action string, options ...string) ([]byte, error) {
+	version, ok := core.HasVersion(options...)
+	if !ok {
+		version = "2017-03-12"
+		options = append(options, "Version="+version)
+	}
 	region, ok := core.HasRegion(options...)
 	if !ok {
 		region = core.DefaultRegion()

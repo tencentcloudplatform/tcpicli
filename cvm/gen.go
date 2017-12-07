@@ -14,27 +14,40 @@ func (p *Pkg) DoAction(action string, query ...string) ([]byte, error) {
 }
 
 func main() {
-	imgId := ""
-	vpcName := "vpcName=tcpiclicvmautogen"                      // vpc
-	cidrBlock := "cidrBlock=10.0.0.0/16"                        // vpc
-	subnetCidr := "subnetSet.0.cidrBlock=10.0.0.0/24"           // vpc
-	subnetZone := "subnetSet.0.zoneId=800001"                   // vpc
-	subnetName := "subnetSet.0.subnetName=tcpiclicvmautogen"    // vpc
+	vpcName := "vpcName=tcpiclicvmautogen" // vpc
+	// cidrBlock := "cidrBlock=10.0.0.0/16"                        // vpc
+	// subnetCidr := "subnetSet.0.cidrBlock=10.0.0.0/24"           // vpc
+	// subnetZone := "subnetSet.0.zoneId=800002"                   // vpc
+	// subnetName := "subnetSet.0.subnetName=tcpiclicvmautogen"    // vpc
 	region := "Region=bj"                                       // common
-	instanceChargeType := "instanceChargeType=POSTPAID_BY_HOUR" // common
+	instanceChargeType := "InstanceChargeType=POSTPAID_BY_HOUR" // common
 	version := "Version=2017-03-12"                             // common
+	instanceName := "InstanceName=tcpiclicvmgen"                // RunInstances
+	instanceType := "InstanceType=S2.SMALL1"                    // RunInstances
+	vagueInstanceName := "VagueInstanceName=tcpiclicvmgen"      // DescribeInstances
+	diskResize := "DataDisks.0.DiskSize=100"                    // ResizeInstanceDisks
+	diskResizeInquiry := "DataDisks.0.DiskSize=150"             // InquiryPriceResizeInstanceDisks
 
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
 		Seq: []string{
 			// CreateVpc & CreateSubnet to run autogen cvm stuff on and capture their id and unId
-			`DO tcpicli vpc CreateVpc ` + region + " " + vpcName + " " + cidrBlock,
+			// `DO tcpicli vpc CreateVpc ` + region + " " + vpcName + " " + cidrBlock,
 			`SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx ` + region + " " + vpcName,
-			`DO tcpicli vpc CreateSubnet vpcId=$vpcId ` + region + " " + subnetCidr + " " + subnetName + " " + subnetZone,
+			`DO echo $vpcId`,
+			// `DO tcpicli vpc CreateSubnet vpcId=$vpcId ` + region + " " + subnetCidr + " " + subnetName + " " + subnetZone,
 			`SET subnetId=tcpicli -f "{{range .Data}}{{.UnSubnetID}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
-			`SET placementZone=tcpicli -f "{{with index .Data 1}}{{.Zone}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
-			"RunInstances",
-			"DescribeInstances",
+			`DO echo $subnetId`,
+			`SET placementZone=tcpicli -f "{{with index .Data 0}}{{.Zone}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
+			`DO echo $placementZone`,
+			`SET imageId=tcpicli img DescribeImages Version=2017-03-12 | grep -E -B1 -i "centos.*7\.3.*64" | grep -i imageid | awk '{ print $2 }' | tr -d "\","`,
+			`DO echo $imageId`,
+			// "RunInstances",
+			// "DescribeInstances"
+			`SET instanceId=tcpicli -f "{{range .Response.InstanceSet}}{{.InstanceID}}{{end}}" cvm DescribeInstances ` + region + " " + vagueInstanceName,
+			`DO echo $instanceId`,
+			`SET diskId=tcpicli -f "{{range .Response.InstanceSet}}{{range .DataDisks}}{{.DiskId}}{{end}}{{end}}" cvm DescribeInstances ` + region + " " + vagueInstanceName,
+			`DO echo $diskId`,
 			// "DescribeInstancesStatus",
 			// "InquiryPriceRunInstances",
 			// "StartInstances",
@@ -44,7 +57,7 @@ func main() {
 			// "ResetInstance",
 			// "InquiryPriceResetInstance",
 			// "ResizeInstanceDisks",
-			// "InquiryPriceResizeInstanceDisks",
+			"InquiryPriceResizeInstanceDisks",
 			// "RenewInstances",
 			// "InquiryPriceRenewInstances",
 			// "ResetInstancesType",
@@ -89,31 +102,72 @@ func main() {
 			// "AssociateInstancesKeyPairs",
 			// "DisassociateInstancesKeyPairs",
 			// Delete VPC stuff
-			`DO tcpicli vpc DeleteSubnet vpcId=$vpcId subnetId=$subnetId ` + region,
-			`DO tcpicli vpc DeleteVpc vpcId=$vpcId ` + region,
+			// `DO tcpicli vpc DeleteSubnet vpcId=$vpcId subnetId=$subnetId ` + region,
+			// `DO tcpicli vpc DeleteVpc vpcId=$vpcId ` + region,
 		},
 		FuncMap: map[string][]string{
-			"DescribeInstances": []string{"213/9388",
-				region,
-				"vpcId=$vpcId",
-			},
 			"RunInstances": []string{"213/9384",
 				region,
 				version,
 				instanceChargeType,
+				instanceName,
+				instanceType,
 				"VirtualPrivateCloud.VpcId=$vpcId",
 				"VirtualPrivateCloud.SubnetId=$subnetId",
+				"ImageId=$imageId",
+				"Placement.Zone=$placementZone",
 			},
-			"DescribeInstancesStatus":                  []string{""},
-			"InquiryPriceRunInstances":                 []string{""},
-			"StartInstances":                           []string{""},
-			"StopInstances":                            []string{""},
-			"TerminateInstances":                       []string{""},
-			"RebootInstances":                          []string{""},
-			"ResetInstance":                            []string{""},
-			"InquiryPriceResetInstance":                []string{""},
-			"ResizeInstanceDisks":                      []string{""},
-			"InquiryPriceResizeInstanceDisks":          []string{""},
+			"DescribeInstances": []string{"213/9388",
+				region,
+			},
+			"DescribeInstancesStatus": []string{"213/9389",
+				version,
+			},
+			"InquiryPriceRunInstances": []string{"213/9385",
+				region,
+				version,
+				instanceType,
+				"Placement.Zone=$placementZone",
+				"ImageId=$imageId",
+			},
+			"StartInstances": []string{"213/9386",
+				region,
+				version,
+				"InstanceIds.1=$instanceId",
+			},
+			"StopInstances": []string{"213/9383",
+				region,
+				version,
+				"InstanceIds.1=$instanceId",
+			},
+			"TerminateInstances": []string{""},
+			"RebootInstances": []string{"213/9369",
+				region,
+				version,
+				"InstanceIds.1=$instanceId",
+			},
+			"ResetInstance": []string{"213/9398",
+				region,
+				version,
+				"InstanceId=$instanceId",
+			},
+			"InquiryPriceResetInstance": []string{"213/9490",
+				region,
+				version,
+				"InstanceId=$instanceId",
+			},
+			"ResizeInstanceDisks": []string{"213/9387",
+				region,
+				version,
+				diskResize,
+				"InstanceId=$instanceId",
+			},
+			"InquiryPriceResizeInstanceDisks": []string{"213/9487",
+				region,
+				version,
+				diskResizeInquiry,
+				"InstanceId=$instanceId",
+			},
 			"RenewInstances":                           []string{""},
 			"InquiryPriceRenewInstances":               []string{""},
 			"ResetInstancesType":                       []string{""},

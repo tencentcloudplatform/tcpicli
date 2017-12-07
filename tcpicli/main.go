@@ -60,6 +60,9 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 			Name:        "cvm",
 			Usage:       "cvm function",
 			Subcommands: funcCvm,
+			Description: `Only supports current API version.
+			For old API support, must use "tcpicli do cvm..."
+			https://cloud.tencent.com/document/api/213/569`,
 		},
 		{
 			Name:        "img",

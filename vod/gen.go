@@ -83,7 +83,9 @@ func main() {
 			"DescribeAllClass",
 			"DescribeClass",
 			// inspect for vod/class sucks because API doesn't allow you to filter by className or name or anything descriptive; only barfs all classes at you. there is an immortal default class, therefore, to filter I need to use bash...
-			`SET classId=tcpicli vod DescribeClass ` + region + " | grep -B1 $(echo " + className + " | cut -d '=' -f2)" + ` | grep -v name | awk '{ print $2 }' | tr -d "\","`,
+			// `SET classId=tcpicli vod DescribeClass ` + region + " | grep -B1 $(echo " + className + " | cut -d '=' -f2)" + ` | grep -v name | awk '{ print $2 }' | tr -d "\","`,
+			`SET className=$(echo ` + className + `)`,
+			`SET classId=tcpicli -f "{{range .Data}}{{if (eq .Name '$className')}}{{.ID}}{{end}}{{end}}" vod DescribeClass`,
 			"ModifyClass",
 			"DeleteClass",
 			// "PullEvent", // Don't undertstand

@@ -34,3 +34,13 @@ func HasRegion(options ...string) (string, bool) {
 	}
 	return "", false
 }
+
+func HasVersion(options ...string) (string, bool) {
+	for _, v := range options {
+		v = strings.ToLower(v)
+		if strings.HasPrefix(v, "version=") {
+			return strings.Split(v, "=")[1], true
+		}
+	}
+	return "", false
+}
