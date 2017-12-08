@@ -31,6 +31,12 @@ var (
 			Action:      ImgDeleteImages,
 			Description: "Referrer: https://cloud.tencent.com/document/api/213/9418",
 		},
+		{
+			Name:        "SyncImages",
+			Usage:       "Syncs images",
+			Action:      ImgSyncImages,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9417",
+		},
 	}
 )
 
@@ -68,6 +74,18 @@ func ImgCreateImage(c *cli.Context) error {
 }
 func ImgDeleteImages(c *cli.Context) error {
 	resp, err := img.DeleteImages(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func ImgSyncImages(c *cli.Context) error {
+	resp, err := img.SyncImages(c.Args()...)
 	if err != nil {
 		return err
 	}
