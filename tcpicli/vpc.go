@@ -337,12 +337,12 @@ var (
 			Action:      VpcModifyRouteTableAttribute,
 			Description: "Referrer: https://cloud.tencent.com/document/api/215/1417",
 		},
-		//{
-		//	Name:        "action",
-		//	Usage:       "",
-		//	Action:      Vpcaction,
-		//	Description: "Referrer: https://cloud.tencent.com/document/api/uri",
-		//},
+		{
+			Name:        "AttachNetworkInterface",
+			Usage:       "Attaches network interface to instance in vpc",
+			Action:      VpcAttachNetworkInterface,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/8836 ",
+		},
 	}
 )
 
@@ -994,6 +994,18 @@ func VpcDeteleSubnetAclRule(c *cli.Context) error {
 }
 func VpcModifySubnetAttribute(c *cli.Context) error {
 	resp, err := vpc.ModifySubnetAttribute(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcAttachNetworkInterface(c *cli.Context) error {
+	resp, err := vpc.AttachNetworkInterface(c.Args()...)
 	if err != nil {
 		return err
 	}

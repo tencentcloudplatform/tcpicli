@@ -4,154 +4,248 @@ package main
 
 import (
 	. "."
-	"bytes"
-	"fmt"
-	"github.com/ChimeraCoder/gojson"
-	"io/ioutil"
-	"log"
-	"strings"
-	"text/template"
-	"time"
+	"github.com/tencentcloudplatform/tcpicli/autogen"
 )
 
-var (
-	docRoot   = "https://cloud.tencent.com/document/api/"
-	queryName = fmt.Sprintf("query%d", time.Now().Unix())
-	seq       = []string{
-		"DescribeRegions", //
-		"DescribeZones", //
-		"DescribeInstances",
-		// "DescribeInstanceStatus",
-		// "InquiryPriceRunInstances",
-		// "DescribeInstanceTypeConfigs",
-		"StartInstances", //
-		"StopInstances",
-		"TerminateInstances",
-		"ResetInstance",
-		"RebootInstances",
-		"InquiryPriceResetInstance",
-		"ResizeInstanceDisks",
-		"RenewInstances",
-		"InquiryPriceResizeInstanceDisks",
-		"InquiryPriceRenewInstances",
-		"ResetInstancesType",
-		"InquiryPriceResetInstancesInternetMaxBandwidth",
-		"InquiryPriceResetInstancesType",
-		"ModifyInstancesRenewFlag",
-		"ModifyInstancesAttribute",
-		"ResetInstancesInternetMaxBandwidth",
-		"ModifyInstancesProject",
-		"UpdateInstanceVpcConfig",
-		"ResetInstancesPassword",
-		"DescribeInstanceInternetBandwidthConfigs",
-	}
-	funcMap = map[string][]string{
-		"DescribeRegions":                                 []string{"213/9456"},
-		"DescribeZones":                                   []string{"213/9455"},
-		"DescribeInstances":                               []string{"213/9388"},
-		// "DescribeInstanceStatus":                          []string{"213/9389", reqUrl},
-		// "InquiryPriceRunInstances":                        []string{"213/9391"},
-		// "DescribeInstanceTypeConfigs":                     []string{"213/9391"},
-		"StartInstances":                                  []string{"213/9386"},
-		"StopInstances":                                   []string{"213/9383"},
-		"TerminateInstances":                              []string{"213/9395"},
-		"ResetInstance":                                   []string{"213/9398"},
-		"RebootInstances":                                 []string{"213/9396"},
-		"InquiryPriceResetInstance":                       []string{"213/9490"},
-		"ResizeInstanceDisks":                             []string{"213/9387"},
-		"RenewInstances":                                  []string{"213/9392"},
-		"InquiryPriceResizeInstanceDisks":                 []string{"213/9487"},
-		"InquiryPriceRenewInstances":                      []string{"213/9491"},
-		"ResetInstancesType":                              []string{"213/9394"},
-		"InquiryPriceResetInstancesInternetMaxBandwidth":  []string{"213/9488"},
-		"InquiryPriceResetInstancesType":                  []string{"213/9489"},
-		"ModifyInstancesRenewFlag":                        []string{"213/9382"},
-		"ModifyInstancesAttribute":                        []string{"213/9381"},
-		"ResetInstancesInternetMaxBandwidth":              []string{"213/9393"},
-		"ModifyInstancesProject":                          []string{"213/9380"},
-		"UpdateInstanceVpcConfig":                         []string{"213/9379"},
-		"ResetInstancesPassword":                          []string{"213/9397"},
-		"DescribeInstanceInternetBandwidthConfigs":        []string{"213/9390"},
-	}
-	pkgName = "cvm"
-)
+type Pkg struct{}
+
+func (p *Pkg) DoAction(action string, query ...string) ([]byte, error) {
+	return DoAction(action, query...)
+}
 
 func main() {
-	for _, action := range seq {
-		query := funcMap[action][1:]
-		document := fmt.Sprintf("%s%s", docRoot, funcMap[action][0])
-		fmt.Println("start gen", action)
-		b, err := DoAction(action, query...)
-		if err != nil {
-			log.Println(action, err.Error())
-			continue
-		}
-		str := fmt.Sprintf("%sResp", action)
-		res, err := gojson.Generate(bytes.NewBuffer(b), gojson.ParseJson, str, pkgName, []string{"json"}, false)
-		if err != nil {
-			log.Println(action, err.Error())
-			continue
-		}
-		s := strings.Join(strings.Split(string(res), "\n")[1:], "\n")
+	vpcName := "vpcName=tcpiclicvmautogen" // vpc
+	// cidrBlock := "cidrBlock=10.0.0.0/16"                        // vpc
+	// subnetCidr := "subnetSet.0.cidrBlock=10.0.0.0/24"           // vpc
+	// subnetZone := "subnetSet.0.zoneId=800002"                   // vpc
+	// subnetName := "subnetSet.0.subnetName=tcpiclicvmautogen"    // vpc
+	region := "Region=bj"                                                             // common
+	instanceChargeType := "InstanceChargeType=POSTPAID_BY_HOUR"                       // common
+	version := "Version=2017-03-12"                                                   // common
+	instanceName := "InstanceName=tcpiclicvmgen"                                      // RunInstances
+	instanceType := "InstanceType=S2.SMALL1"                                          // RunInstances
+	vagueInstanceName := "VagueInstanceName=tcpiclicvmgen"                            // DescribeInstances
+	diskResize := "DataDisks.0.DiskSize=100"                                          // ResizeInstanceDisks
+	diskResizeInquiry := "DataDisks.0.DiskSize=150"                                   // InquiryPriceResizeInstanceDisks
+	instanceTypeResize := "InstanceType=S2.SMALL2"                                    // ResizeInstancesType / InquiryPriceResizeInstancesType
+	instanceNameMod := "InstanceName=tcpiclicvmgenmod"                                // ModyInstancesAttribute
+	internetAccessableMaxBandwidth := "InternetAccessable.InternetMaxBandwidthOut=10" // ResetInstancesInternetMaxBandwidth
 
-		var buf bytes.Buffer
-		packageTemplate.Execute(&buf, struct {
-			Timestamp time.Time
-			PkgName   string
-			Action    string
-			Struct    string
-			Document  string
-		}{
-			Timestamp: time.Now(),
-			PkgName:   pkgName,
-			Action:    action,
-			Struct:    s,
-			Document:  document,
-		})
-		var overwrite bool
-		fname := action + ".go"
-		current, err := ioutil.ReadFile(fname)
-		if err != nil {
-			overwrite = true
-		}
-		currentS := strings.Join(strings.Split(string(current), "\n")[1:], "\n")
-		bufS := strings.Join(strings.Split(buf.String(), "\n")[1:], "\n")
-		if !overwrite && currentS != bufS {
-			overwrite = true
-		}
-		if overwrite {
-			err = ioutil.WriteFile(fname, buf.Bytes(), 0644)
-			if err != nil {
-				log.Println(action, err.Error())
-				continue
-			}
-			fmt.Println("finish gen", action)
-		} else {
-			fmt.Println("finish nochange", action)
-		}
+	gen := &autogen.Gen{
+		DocRoot: "https://cloud.tencent.com/document/api/",
+		Seq: []string{
+			// CreateVpc & CreateSubnet to run autogen cvm stuff on and capture their id and unId
+			// `DO tcpicli vpc CreateVpc ` + region + " " + vpcName + " " + cidrBlock,
+			`SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx ` + region + " " + vpcName,
+			`DO echo $vpcId`,
+			// `DO tcpicli vpc CreateSubnet vpcId=$vpcId ` + region + " " + subnetCidr + " " + subnetName + " " + subnetZone,
+			`SET subnetId=tcpicli -f "{{range .Data}}{{.UnSubnetID}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
+			`DO echo $subnetId`,
+			`SET placementZone=tcpicli -f "{{with index .Data 0}}{{.Zone}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
+			`DO echo $placementZone`,
+			`SET imageId=tcpicli img DescribeImages Version=2017-03-12 | grep -E -B1 -i "centos.*7\.3.*64" | grep -i imageid | awk '{ print $2 }' | tr -d "\","`,
+			`DO echo $imageId`,
+			// "RunInstances",
+			// "DescribeInstances"
+			`SET instanceId=tcpicli -f "{{range .Response.InstanceSet}}{{.InstanceID}}{{end}}" cvm DescribeInstances ` + region + " " + vagueInstanceName,
+			`DO echo $instanceId`,
+			`SET diskId=tcpicli -f "{{range .Response.InstanceSet}}{{range .DataDisks}}{{.DiskId}}{{end}}{{end}}" cvm DescribeInstances ` + region + " " + vagueInstanceName,
+			`DO echo $diskId`,
+			// "DescribeInstancesStatus",
+			// "InquiryPriceRunInstances",
+			// "StartInstances",
+			// "StopInstances",
+			// "TerminateInstances",
+			// "RebootInstances",
+			// "ResetInstance",
+			// "InquiryPriceResetInstance",
+			// "ResizeInstanceDisks",
+			// "InquiryPriceResizeInstanceDisks", // manually coded since requires prepaid instance
+			// "RenewInstances",
+			// "InquiryPriceRenewInstances",
+			// "ResetInstancesType",
+			// "InquiryPriceResetInstancesType",
+			// "ModifyInstancesRenewFlag",
+			// "ModifyInstancesAttribute",
+			// "ResetInstancesInternetMaxBandwidth",
+			// "ModifyInstancesProject",
+			// "UpdateInstanceVpcConfig",
+			// "ResetInstancesPassword",
+			"DescribeInstanceInternetBandwidthConfigs",
+			// "DescribeImages",
+			// "CreateImage",
+			// "DeleteImages",
+			// "ModifyImageAttribute",
+			// "SyncImages",
+			// "ModifyImageSharePermission",
+			// "DescribeImageSharePermission",
+			// "AttachNetworkInterface",
+			// "DescribeSecurityGroups",
+			// "CreateSecurityGroup",
+			// "DeleteSecurityGroup",
+			// "ModifySecurityGroupAttribute",
+			// "DescribeSecurityGroupPolicy",
+			// "ModifySecurityGroupPolicy",
+			// "DescribeInstancesOfSecurityGroup",
+			// "ModifySecurityGroupsOfInstance",
+			// "DescribeAssociateSecurityGroups",
+			// "DescribeEip",
+			// "DescribeEipQuota",
+			// "ModifyEipAttributes",
+			// "CreateEip",
+			// "DeleteEip",
+			// "EipBindInstance",
+			// "EipUnBindInstance",
+			// "TransformWanIpToEip",
+			// "DescribeKeyPairs",
+			// "CreateKeyPair",
+			// "ModifyKeyPairAttribute",
+			// "DeleteKeyPairs",
+			// "ImportKeyPair",
+			// "AssociateInstancesKeyPairs",
+			// "DisassociateInstancesKeyPairs",
+			// Delete VPC stuff
+			// `DO tcpicli vpc DeleteSubnet vpcId=$vpcId subnetId=$subnetId ` + region,
+			// `DO tcpicli vpc DeleteVpc vpcId=$vpcId ` + region,
+		},
+		FuncMap: map[string][]string{
+			"RunInstances": []string{"213/9384",
+				region,
+				version,
+				instanceChargeType,
+				instanceName,
+				instanceType,
+				"VirtualPrivateCloud.VpcId=$vpcId",
+				"VirtualPrivateCloud.SubnetId=$subnetId",
+				"ImageId=$imageId",
+				"Placement.Zone=$placementZone",
+			},
+			"DescribeInstances": []string{"213/9388",
+				region,
+			},
+			"DescribeInstancesStatus": []string{"213/9389",
+				version,
+			},
+			"InquiryPriceRunInstances": []string{"213/9385",
+				region,
+				version,
+				instanceType,
+				"Placement.Zone=$placementZone",
+				"ImageId=$imageId",
+			},
+			"StartInstances": []string{"213/9386",
+				region,
+				version,
+				"InstanceIds.1=$instanceId",
+			},
+			"StopInstances": []string{"213/9383",
+				region,
+				version,
+				"InstanceIds.1=$instanceId",
+			},
+			"TerminateInstances": []string{""},
+			"RebootInstances": []string{"213/9369",
+				region,
+				version,
+				"InstanceIds.1=$instanceId",
+			},
+			"ResetInstance": []string{"213/9398",
+				region,
+				version,
+				"InstanceId=$instanceId",
+			},
+			"InquiryPriceResetInstance": []string{"213/9490",
+				region,
+				version,
+				"InstanceId=$instanceId",
+			},
+			"ResizeInstanceDisks": []string{"213/9387",
+				region,
+				version,
+				diskResize,
+				"InstanceId=$instanceId",
+			},
+			"InquiryPriceResizeInstanceDisks": []string{"213/9487",
+				region,
+				version,
+				diskResizeInquiry,
+				"InstanceId=$instanceId",
+			},
+			"RenewInstances": []string{""},
+			"InquiryPriceRenewInstances": []string{"213/9491",
+				region,
+				version,
+				"InstanceIds.1=$instanceId",
+			},
+			"ResetInstancesType": []string{"213/9394",
+				region,
+				version,
+				instanceTypeResize,
+				"InstanceIds.1=$instanceId",
+			},
+			"InquiryPriceResetInstancesType": []string{"213/9489",
+				region,
+				version,
+				instanceTypeResize,
+				"InstanceIds.1=$instanceId",
+			},
+			"ModifyInstancesRenewFlag": []string{""},
+			"ModifyInstancesAttribute": []string{"213/9381",
+				region,
+				version,
+				instanceNameMod,
+				"InstanceIds.1=$instanceId",
+			},
+			"ResetInstancesInternetMaxBandwidth": []string{"213/9393",
+				region,
+				version,
+				internetAccessableMaxBandwidth,
+				"InstanceIds.1=$instanceId",
+			},
+			"ModifyInstancesProject":  []string{""},
+			"UpdateInstanceVpcConfig": []string{""},
+			"ResetInstancesPassword":  []string{""},
+			"DescribeInstanceInternetBandwidthConfigs": []string{"213/9390",
+				version,
+				region,
+				"InstanceId=$instanceId",
+			},
+			"DescribeImages":                   []string{""},
+			"CreateImage":                      []string{""},
+			"DeleteImages":                     []string{""},
+			"ModifyImageAttribute":             []string{""},
+			"SyncImages":                       []string{""},
+			"ModifyImageSharePermission":       []string{""},
+			"DescribeImageSharePermission":     []string{""},
+			"AttachNetworkInterface":           []string{""},
+			"DescribeSecurityGroups":           []string{""},
+			"CreateSecurityGroup":              []string{""},
+			"DeleteSecurityGroup":              []string{""},
+			"ModifySecurityGroupAttribute":     []string{""},
+			"DescribeSecurityGroupPolicy":      []string{""},
+			"ModifySecurityGroupPolicy":        []string{""},
+			"DescribeInstancesOfSecurityGroup": []string{""},
+			"ModifySecurityGroupsOfInstance":   []string{""},
+			"DescribeAssociateSecurityGroups":  []string{""},
+			"DescribeEip":                      []string{""},
+			"DescribeEipQuota":                 []string{""},
+			"ModifyEipAttributes":              []string{""},
+			"CreateEip":                        []string{""},
+			"DeleteEip":                        []string{""},
+			"EipBindInstance":                  []string{""},
+			"EipUnBindInstance":                []string{""},
+			"TransformWanIpToEip":              []string{""},
+			"DescribeKeyPairs":                 []string{""},
+			"CreateKeyPair":                    []string{""},
+			"ModifyKeyPairAttribute":           []string{""},
+			"DeleteKeyPairs":                   []string{""},
+			"ImportKeyPair":                    []string{""},
+			"AssociateInstancesKeyPairs":       []string{""},
+			"DisassociateInstancesKeyPairs":    []string{""},
+		},
+		PkgName: "cvm",
+		Pkg:     new(Pkg),
 	}
+
+	gen.Run()
 }
-
-var packageTemplate = template.Must(template.New("").Parse(`// {{ .Timestamp }}
-// Code generated by go generate; DO NOT EDIT.
-// This file was generated by robots at
-
-package {{.PkgName}}
-import (
-	"encoding/json"
-)
-
-{{.Struct}}
-
-// Implement {{.Document}}
-func {{.Action}}(options ...string) (*{{.Action}}Resp, error) {
-	resp, err := DoAction("{{.Action}}", options...)
-	if err != nil {
-		return nil, err
-	}
-	var s {{.Action}}Resp
-	err = json.Unmarshal(resp, &s)
-	return &s, err
-}
-
-`))
