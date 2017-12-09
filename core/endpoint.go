@@ -12,5 +12,6 @@ var Endpoint = map[string]string{
 	"redis":   "redis.api.qcloud.com/v2/index.php",
 	"img":     "image.api.qcloud.com/v2/index.php",
 	"eip":     "eip.api.qcloud.com/v2/index.php",
+	"lb":      "lb.api.qcloud.com/v2/index.php",
 	"vod":     "vod.api.qcloud.com/v2/index.php",
 }
