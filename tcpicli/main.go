@@ -79,7 +79,11 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 			Usage:       "cmq function",
 			Subcommands: funcCmq,
 		},
-
+		{
+			Name:        "eip",
+			Usage:       "Elastic IP",
+			Subcommands: funcEip,
+		},
 		{
 			Name:        "dfw",
 			Usage:       "Cloud FireWall",
