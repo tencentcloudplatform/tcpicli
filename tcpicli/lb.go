@@ -31,6 +31,42 @@ var (
 			Action:      LbDescribeLoadBalancers,
 			Description: "Referrer: https://cloud.tencent.com/document/api/214/1261",
 		},
+		{
+			Name:        "ModifyLoadBalancerAttributes",
+			Usage:       "Change LB attributes",
+			Action:      LbModifyLoadBalancerAttributes,
+			Description: "Referrer: https://cloud.tencent.com/document/api/214/1263",
+		},
+		{
+			Name:        "DeleteLoadBalancers",
+			Usage:       "Deletes LB",
+			Action:      LbDeleteLoadBalancers,
+			Description: "Referrer: https://cloud.tencent.com/document/api/214/1257",
+		},
+		{
+			Name:        "CreateLoadBalancerListeners",
+			Usage:       "Creates a listener on a LB",
+			Action:      LbCreateLoadBalancerListeners,
+			Description: "Referrer: https://cloud.tencent.com/document/api/214/1255",
+		},
+		{
+			Name:        "DescribeLoadBalancerListeners",
+			Usage:       "Describes a listener on a LB",
+			Action:      LbDescribeLoadBalancerListeners,
+			Description: "Referrer: https://cloud.tencent.com/document/api/214/1260",
+		},
+		{
+			Name:        "ModifyLoadBalancerListener",
+			Usage:       "Modifies a listener on a LB",
+			Action:      LbModifyLoadBalancerListener,
+			Description: "Referrer: https://cloud.tencent.com/document/api/214/3601",
+		},
+		{
+			Name:        "DeleteLoadBalancerListeners",
+			Usage:       "Deletes a listener from a LB",
+			Action:      LbDeleteLoadBalancerListeners,
+			Description: "Referrer: https://cloud.tencent.com/document/api/214/1256",
+		},
 	}
 )
 
@@ -68,6 +104,78 @@ func LbCreateLoadBalancer(c *cli.Context) error {
 }
 func LbDescribeLoadBalancers(c *cli.Context) error {
 	resp, err := lb.DescribeLoadBalancers(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func LbModifyLoadBalancerAttributes(c *cli.Context) error {
+	resp, err := lb.ModifyLoadBalancerAttributes(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func LbDeleteLoadBalancers(c *cli.Context) error {
+	resp, err := lb.DeleteLoadBalancers(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func LbCreateLoadBalancerListeners(c *cli.Context) error {
+	resp, err := lb.CreateLoadBalancerListeners(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func LbDescribeLoadBalancerListeners(c *cli.Context) error {
+	resp, err := lb.DescribeLoadBalancerListeners(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func LbModifyLoadBalancerListener(c *cli.Context) error {
+	resp, err := lb.ModifyLoadBalancerListener(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func LbDeleteLoadBalancerListeners(c *cli.Context) error {
+	resp, err := lb.DeleteLoadBalancerListeners(c.Args()...)
 	if err != nil {
 		return err
 	}
