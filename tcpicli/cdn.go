@@ -107,11 +107,6 @@ var (
 			Description: "referer https://cloud.tencent.com/document/api/228/3948",
 		},
 		{
-			Name:   "GetCdnOverseaRefreshLog",
-			Usage:  "GetCdnOverseaRefreshLog",
-			Action: CdnGetCdnOverseaRefreshLog,
-		},
-		{
 			Name:   "CdnOverseaPushser",
 			Usage:  "CdnOverseaPushser",
 			Action: CdnCdnOverseaPushser,
@@ -368,14 +363,6 @@ func CdnGetCdnRefreshLog(c *cli.Context) error {
 		return err
 	}
 	fmt.Println(r)
-	return nil
-}
-func CdnGetCdnOverseaRefreshLog(c *cli.Context) error {
-	resp, err := cdn.GetCdnOverseaRefreshLog(c.Args()...)
-	if err != nil {
-		return err
-	}
-	fmt.Println(string(resp))
 	return nil
 }
 func CdnCdnOverseaPushser(c *cli.Context) error {

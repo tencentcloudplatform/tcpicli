@@ -12,7 +12,7 @@ import (
 const PWD = `github.com/tencentcloudplatform/tcpicli/core`
 
 func DoAction(service, action string, options ...string) ([]byte, error) {
-	return NewClient().DoAction(service, action, options...)
+	return DefaultClient.DoAction(service, action, options...)
 }
 
 func (client *Client) DoAction(service, action string, options ...string) ([]byte, error) {

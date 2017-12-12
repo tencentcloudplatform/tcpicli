@@ -124,7 +124,7 @@ func before(c *cli.Context) error {
 		}
 	*/
 	if c.Bool("vv") {
-		core.Log = log.New(os.Stderr, "[core] ", log.LstdFlags|log.Lshortfile)
+		core.DefaultClient.SetLog(os.Stderr, "[core] ", log.LstdFlags|log.Lshortfile)
 	}
 	return nil
 }

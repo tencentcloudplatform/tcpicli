@@ -40,6 +40,12 @@ type Client struct {
 	lg         *log.Logger
 }
 
+var DefaultClient *Client
+
+func init() {
+	DefaultClient = NewClient()
+}
+
 func NewClient() *Client {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
