@@ -4,8 +4,16 @@ import (
 	"github.com/tencentcloudplatform/tcpicli/core"
 )
 
-var requesturl string = core.Endpoint["cdn"]
+type CdnClient struct {
+	core.Client
+}
+
+var DefaultClient = CdnClient{}
 
 func DoAction(action string, options ...string) ([]byte, error) {
-	return core.DoAction("cdn", action, options...)
+	return DefaultClient.Client.DoAction("cdn", action, options...)
+}
+
+func (client *CdnClient) DoAction(action string, options ...string) ([]byte, error) {
+	return client.Client.DoAction("cdn", action, options...)
 }

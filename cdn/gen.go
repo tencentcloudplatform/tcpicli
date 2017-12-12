@@ -38,7 +38,7 @@ func main() {
 			"RefreshCdnDir",
 			"SET taskId=tcpicli -f {{.Data.TaskID}} cdn RefreshCdnUrl http://" + domain + "/file",
 			"DO sleep 30",
-			"GetCdnRefreshLog",
+			"GetCdnOverseaRefreshLog",
 			"DescribeCdnHostInfo",
 			"DescribeCdnHostDetailedInfo",
 			"GetCdnHostsDetailStatistics",
@@ -84,9 +84,10 @@ func main() {
 			"OnlineHost":        []string{"228/1402", "host=" + domain},
 			"DeleteCdnHost":     []string{"228/1396", "host=" + domain},
 
-			"RefreshCdnUrl":    []string{"228/3946", "urls.0=http://" + domain + "/1.jpg"},
-			"RefreshCdnDir":    []string{"228/3947", "dirs.0=http://" + domain + "/abc/"},
-			"GetCdnRefreshLog": []string{"228/3948", "taskId=$taskId"},
+			"RefreshCdnUrl": []string{"228/3946", "urls.0=http://" + domain + "/1.jpg"},
+			"RefreshCdnDir": []string{"228/3947", "dirs.0=http://" + domain + "/abc/"},
+
+			"GetCdnOverseaRefreshLog": []string{"228/7347", "taskId=$taskId"},
 
 			"DescribeCdnHostInfo":         []string{"228/3941", startDate, endDate, "statType=flux", "projects.0=$projectId"},
 			"DescribeCdnHostDetailedInfo": []string{"228/3942", startDate, endDate, "statType=flux", "projects.0=$projectId"},
