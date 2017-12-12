@@ -14,17 +14,23 @@ func (p *Pkg) DoAction(action string, query ...string) ([]byte, error) {
 }
 
 func main() {
-	vpcName := "vpcName=tcpiclicvmautogen" // vpc
+	// vpcName := "vpcName=tcpiclicvmautogen" // vpc
 	// cidrBlock := "cidrBlock=10.0.0.0/16"                        // vpc
 	// subnetCidr := "subnetSet.0.cidrBlock=10.0.0.0/24"           // vpc
 	// subnetZone := "subnetSet.0.zoneId=800002"                   // vpc
 	// subnetName := "subnetSet.0.subnetName=tcpiclicvmautogen"    // vpc
-	region := "Region=bj"                                                             // common
-	instanceChargeType := "InstanceChargeType=POSTPAID_BY_HOUR"                       // common
-	version := "Version=2017-03-12"                                                   // common
-	instanceName := "InstanceName=tcpiclicvmgen"                                      // RunInstances
-	instanceType := "InstanceType=S2.SMALL1"                                          // RunInstances
-	vagueInstanceName := "VagueInstanceName=tcpiclicvmgen"                            // DescribeInstances
+	projectId := "ProjectId=1068783"        // CreateKeyPair
+	keyName := "tcpiclikey"                 // CreateKeyPair
+	keyNameIn := "KeyName=" + keyName       // CreateKeyPair
+	keyNameMod := "tcpiclikeymod"           // ModifyKeyPairAttribute
+	keyNameModIn := "KeyName=" + keyNameMod // ModifyKeyPairAttribute
+	region := "Region=bj"                   // common
+	publicKey := "PublicKey=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDHoY5NPtrqFyzeZOdSnxn5AA+m3A/vO4REZuVClyKdNbog7CK5RYK6VPcKXc6Dm/RiHkrxp07L7Yw5o80KKSdX2i/trgJ8O4tkmFlpZ0HNGGks/9nbqZDg7h4kLniaYphhhHFckaaM9BbLKnjjjx7NOIBLjLJlQypLpk1DaxM0FFnqvdW/RwMIywMzEAcBoFb2TsQ+Obk0dF2/wEiQt93VppAK/Jua4Xu5q6CFhhWXA2buzw2g1Pd6vPJ+OoIR+QRw4ZfjuH3tDuZXzOr3h11EWJcZQ/apG/fnMoQjng8iTgF+RPcVLZJQ6Jwq1a4JpyG3KL4kRkwFScvLh0cwrCwR"
+	instanceChargeType := "InstanceChargeType=POSTPAID_BY_HOUR" // common
+	version := "Version=2017-03-12"                             // common
+	instanceName := "InstanceName=tcpiclicvmgen"                // RunInstances
+	instanceType := "InstanceType=S2.SMALL1"                    // RunInstances
+	// vagueInstanceName := "VagueInstanceName=tcpiclicvmgen"                            // DescribeInstances
 	diskResize := "DataDisks.0.DiskSize=100"                                          // ResizeInstanceDisks
 	diskResizeInquiry := "DataDisks.0.DiskSize=150"                                   // InquiryPriceResizeInstanceDisks
 	instanceTypeResize := "InstanceType=S2.SMALL2"                                    // ResizeInstancesType / InquiryPriceResizeInstancesType
@@ -36,31 +42,30 @@ func main() {
 		Seq: []string{
 			// CreateVpc & CreateSubnet to run autogen cvm stuff on and capture their id and unId
 			// `DO tcpicli vpc CreateVpc ` + region + " " + vpcName + " " + cidrBlock,
-			`SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx ` + region + " " + vpcName,
-			`DO echo $vpcId`,
+			// `SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx ` + region + " " + vpcName,
+			// `DO echo $vpcId`,
 			// `DO tcpicli vpc CreateSubnet vpcId=$vpcId ` + region + " " + subnetCidr + " " + subnetName + " " + subnetZone,
-			`SET subnetId=tcpicli -f "{{range .Data}}{{.UnSubnetID}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
-			`DO echo $subnetId`,
-			`SET placementZone=tcpicli -f "{{with index .Data 0}}{{.Zone}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
-			`DO echo $placementZone`,
-			`SET imageId=tcpicli img DescribeImages Version=2017-03-12 | grep -E -B1 -i "centos.*7\.3.*64" | grep -i imageid | awk '{ print $2 }' | tr -d "\"," | head -n1`,
-			`DO echo $imageId`,
+			// `SET subnetId=tcpicli -f "{{range .Data}}{{.UnSubnetID}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
+			// `DO echo $subnetId`,
+			// `SET placementZone=tcpicli -f "{{with index .Data 0}}{{.Zone}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
+			// `DO echo $placementZone`,
+			// `SET imageId=tcpicli img DescribeImages Version=2017-03-12 | grep -E -B1 -i "centos.*7\.3.*64" | grep -i imageid | awk '{ print $2 }' | tr -d "\"," | head -n1`,
+			// `DO echo $imageId`,
 			// "RunInstances",
 			// "DescribeInstances"
-			`SET instanceId=tcpicli -f '{{range .Response.InstanceSet}}{{if eq .InstanceName "tcpiclicvmgenmod"}}{{.InstanceID}}{{end}}{{end}}' cvm DescribeInstances ` + region,
-			`DO echo $instanceId`,
-			`SET diskId=tcpicli -f "{{range .Response.InstanceSet}}{{range .DataDisks}}{{.DiskId}}{{end}}{{end}}" cvm DescribeInstances ` + region + " " + vagueInstanceName,
-			`DO echo $diskId`,
+			// `SET instanceId=tcpicli -f '{{range .Response.InstanceSet}}{{if eq .InstanceName "tcpiclicvmgenmod"}}{{.InstanceID}}{{end}}{{end}}' cvm DescribeInstances ` + region,
+			// `DO echo $instanceId`,
+			// `SET diskId=tcpicli -f "{{range .Response.InstanceSet}}{{range .DataDisks}}{{.DiskId}}{{end}}{{end}}" cvm DescribeInstances ` + region + " " + vagueInstanceName,
+			// `DO echo $diskId`,
 			// "DescribeInstancesStatus",
 			// "InquiryPriceRunInstances",
 			// "StartInstances",
 			// "StopInstances",
-			"TerminateInstances",
+			// "TerminateInstances",
 			// "RebootInstances",
 			// "ResetInstance",
 			// "InquiryPriceResetInstance",
 			// "ResizeInstanceDisks",
-			// "InquiryPriceResizeInstanceDisks", // manually coded since requires prepaid instance
 			// "RenewInstances",
 			// "InquiryPriceRenewInstances",
 			// "ResetInstancesType",
@@ -72,37 +77,13 @@ func main() {
 			// "UpdateInstanceVpcConfig",
 			// "ResetInstancesPassword",
 			// "DescribeInstanceInternetBandwidthConfigs",
-			// "DescribeImages",
-			// "CreateImage",
-			// "DeleteImages",
-			// "ModifyImageAttribute",
-			// "SyncImages",
-			// "ModifyImageSharePermission",
-			// "DescribeImageSharePermission",
-			// "AttachNetworkInterface",
-			// "DescribeSecurityGroups",
-			// "CreateSecurityGroup",
-			// "DeleteSecurityGroup",
-			// "ModifySecurityGroupAttribute",
-			// "DescribeSecurityGroupPolicy",
-			// "ModifySecurityGroupPolicy",
-			// "DescribeInstancesOfSecurityGroup",
-			// "ModifySecurityGroupsOfInstance",
-
-			// "DescribeAssociateSecurityGroups",
-			// "DescribeEip",
-			// "DescribeEipQuota",
-			// "ModifyEipAttributes",
-			// "CreateEip",
-			// "DeleteEip",
-			// "EipBindInstance",
-			// "EipUnBindInstance",
-			// "TransformWanIpToEip",
 			// "DescribeKeyPairs",
 			// "CreateKeyPair",
+			`SET keyId=tcpicli -f '{{range .Response.KeyPairSet}}{{if eq .KeyName "` + keyName + `"}}{{.KeyID}}{{end}}{{end}}' cvm DescribeKeyPairs ` + version + " " + region,
+			`DO echo $keyId`,
 			// "ModifyKeyPairAttribute",
 			// "DeleteKeyPairs",
-			// "ImportKeyPair",
+			"ImportKeyPair",
 			// "AssociateInstancesKeyPairs",
 			// "DisassociateInstancesKeyPairs",
 			// Delete VPC stuff
@@ -215,38 +196,35 @@ func main() {
 				region,
 				"InstanceId=$instanceId",
 			},
-			"DescribeImages":                   []string{""},
-			"CreateImage":                      []string{""},
-			"DeleteImages":                     []string{""},
-			"ModifyImageAttribute":             []string{""},
-			"SyncImages":                       []string{""},
-			"ModifyImageSharePermission":       []string{""},
-			"DescribeImageSharePermission":     []string{""},
-			"AttachNetworkInterface":           []string{""},
-			"DescribeSecurityGroups":           []string{""},
-			"CreateSecurityGroup":              []string{""},
-			"DeleteSecurityGroup":              []string{""},
-			"ModifySecurityGroupAttribute":     []string{""},
-			"DescribeSecurityGroupPolicy":      []string{""},
-			"ModifySecurityGroupPolicy":        []string{""},
-			"DescribeInstancesOfSecurityGroup": []string{""},
-			"ModifySecurityGroupsOfInstance":   []string{""},
-			"DescribeAssociateSecurityGroups":  []string{""},
-			"DescribeEip":                      []string{""},
-			"DescribeEipQuota":                 []string{""},
-			"ModifyEipAttributes":              []string{""},
-			"CreateEip":                        []string{""},
-			"DeleteEip":                        []string{""},
-			"EipBindInstance":                  []string{""},
-			"EipUnBindInstance":                []string{""},
-			"TransformWanIpToEip":              []string{""},
-			"DescribeKeyPairs":                 []string{""},
-			"CreateKeyPair":                    []string{""},
-			"ModifyKeyPairAttribute":           []string{""},
-			"DeleteKeyPairs":                   []string{""},
-			"ImportKeyPair":                    []string{""},
-			"AssociateInstancesKeyPairs":       []string{""},
-			"DisassociateInstancesKeyPairs":    []string{""},
+			"DescribeKeyPairs": []string{"213/9403",
+				region,
+				version,
+			},
+			"CreateKeyPair": []string{"213/9400",
+				region,
+				version,
+				projectId,
+				keyNameIn,
+			},
+			"ModifyKeyPairAttribute": []string{"213/9399",
+				region,
+				version,
+				keyNameModIn,
+				"KeyId=$keyId",
+			},
+			"DeleteKeyPairs": []string{"213/9401",
+				region,
+				version,
+				"KeyIds.1=$keyId",
+			},
+			"ImportKeyPair": []string{"213/9402",
+				version,
+				projectId,
+				publicKey,
+				keyNameIn,
+			},
+			"AssociateInstancesKeyPairs":    []string{""},
+			"DisassociateInstancesKeyPairs": []string{""},
 		},
 		PkgName: "cvm",
 		Pkg:     new(Pkg),

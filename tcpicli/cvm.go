@@ -139,6 +139,42 @@ var (
 			Action:      CvmTerminateInstances,
 			Description: "Referrer: https://cloud.tencent.com/document/api/213/9395",
 		},
+		{
+			Name:        "DescribeKeyPairs",
+			Usage:       "Describes key pairs",
+			Action:      CvmDescribeKeyPairs,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9403",
+		},
+		{
+			Name:        "CreateKeyPair",
+			Usage:       "Creates new key pairs",
+			Action:      CvmCreateKeyPair,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9400",
+		},
+		{
+			Name:        "ModifyKeyPairAttribute",
+			Usage:       "Modifies attribute of key pair",
+			Action:      CvmModifyKeyPairAttribute,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9403",
+		},
+		{
+			Name:        "ImportKeyPair",
+			Usage:       "Imports an existing public key",
+			Action:      CvmImportKeyPair,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9402",
+		},
+		{
+			Name:        "AssociateInstancesKeyPairs",
+			Usage:       "binds a key pair to an instance",
+			Action:      CvmAssociateInstancesKeyPairs,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9404",
+		},
+		{
+			Name:        "DisassociateInstancesKeyPairs",
+			Usage:       "unbinds a key pair to an instance",
+			Action:      CvmDisassociateInstancesKeyPairs,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9405",
+		},
 	}
 )
 
@@ -392,6 +428,78 @@ func CvmDescribeInstanceInternetBandwidthConfigs(c *cli.Context) error {
 }
 func CvmTerminateInstances(c *cli.Context) error {
 	resp, err := cvm.TerminateInstances(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmDescribeKeyPairs(c *cli.Context) error {
+	resp, err := cvm.DescribeKeyPairs(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmCreateKeyPair(c *cli.Context) error {
+	resp, err := cvm.CreateKeyPair(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmModifyKeyPairAttribute(c *cli.Context) error {
+	resp, err := cvm.ModifyKeyPairAttribute(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmImportKeyPair(c *cli.Context) error {
+	resp, err := cvm.ImportKeyPair(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmAssociateInstancesKeyPairs(c *cli.Context) error {
+	resp, err := cvm.AssociateInstancesKeyPairs(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmDisassociateInstancesKeyPairs(c *cli.Context) error {
+	resp, err := cvm.DisassociateInstancesKeyPairs(c.Args()...)
 	if err != nil {
 		return err
 	}
