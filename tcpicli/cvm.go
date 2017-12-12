@@ -133,6 +133,12 @@ var (
 			Action:      CvmDescribeInstanceInternetBandwidthConfigs,
 			Description: "Referrer: https://cloud.tencent.com/document/api/213/9390",
 		},
+		{
+			Name:        "TerminateInstances",
+			Usage:       "Terminates an instance",
+			Action:      CvmTerminateInstances,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/9395",
+		},
 	}
 )
 
@@ -374,6 +380,18 @@ func CvmResetInstancesPassword(c *cli.Context) error {
 }
 func CvmDescribeInstanceInternetBandwidthConfigs(c *cli.Context) error {
 	resp, err := cvm.DescribeInstanceInternetBandwidthConfigs(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CvmTerminateInstances(c *cli.Context) error {
+	resp, err := cvm.TerminateInstances(c.Args()...)
 	if err != nil {
 		return err
 	}

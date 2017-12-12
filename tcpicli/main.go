@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-var VER = "1.0.0"
+var VER = "1.1.0"
 var buildtime string
 var formatOut string
 
@@ -88,6 +88,11 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 			Name:        "dfw",
 			Usage:       "Cloud FireWall",
 			Subcommands: funcDfw,
+		},
+		{
+			Name:        "lb",
+			Usage:       "Cloud LoadBalancer",
+			Subcommands: funcLb,
 		},
 		{
 			Name:        "vod",
