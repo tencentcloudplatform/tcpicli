@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/tencentcloudplatform/tcpicli/vpc"
 	"github.com/urfave/cli"
@@ -10,334 +9,339 @@ import (
 var (
 	funcVpc []cli.Command = []cli.Command{
 		{
-			Name:        "do",
-			Usage:       "do <action> <args1=value1> [args2=value2] ...",
-			Action:      VpcDoAction,
-			Description: "do VPC action and output json response",
+			Name:   "do",
+			Usage:  "do action and output raw json response.",
+			Action: VpcDoAction,
 		},
 		{
 			Name:        "CreateVpc",
-			Usage:       "Used to create VPCs",
+			Usage:       "Creates a new VPC.",
 			Action:      VpcCreateVpc,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1309",
-		},
-		{
-			Name:        "DeleteVpc",
-			Usage:       "Used to delete VPCs",
-			Action:      VpcDeleteVpc,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1307",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1309",
 		},
 		{
 			Name:        "DescribeVpcEx",
-			Usage:       "Used to query VPCs",
+			Usage:       "Queries VPC list.",
 			Action:      VpcDescribeVpcEx,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1372",
-		},
-		{
-			Name:        "ModifyVpcAttribute",
-			Usage:       "Used to change VPC attribute. Currently only thing supported is name change???",
-			Action:      VpcModifyVpcAttribute,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1310",
-		},
-		{
-			Name:        "AttachClassicLinkVpc",
-			Usage:       "Used to connect VPC and basic network devices",
-			Action:      VpcAttachClassicLinkVpc,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/2098",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1372",
 		},
 		{
 			Name:        "DescribeVpcClassicLink",
-			Usage:       "Used to describe existing VPC classic links",
+			Usage:       "Describes classic link between VPC and CVM",
 			Action:      VpcDescribeVpcClassicLink,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/2112",
-		},
-		{
-			Name:        "DetachClassicLinkVpc",
-			Usage:       "Used to delete VPC classic links",
-			Action:      VpcDetachClassicLinkVpc,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/2097",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1844",
 		},
 		{
 			Name:        "DescribeVpcLimit",
-			Usage:       "Used to describe VPC limits",
+			Usage:       "Describes VPC limits.",
 			Action:      VpcDescribeVpcLimit,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1844",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/2112",
+		},
+		{
+			Name:        "ModifyVpcAttribute",
+			Usage:       "Modifies VPC attribute",
+			Action:      VpcModifyVpcAttribute,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1310",
+		},
+		// {
+		// 	Name:        "AssociateVip",
+		// 	Usage:       "Binds EIP to instance",
+		// 	Action:      VpcAssociateVip,
+		// 	Description: "Referrer: https://cloud.tencent.com/document/api/215/1361",
+		// },
+		//{
+		//	Name:        "AttachClassicLinkVpc",
+		//	Usage:       "Binds a CVM to a VPC.",
+		//	Action:      VpcAttachClassicLinkVpc,
+		//	Description: "Referrer: https://cloud.tencent.com/document/api/215/2098",
+		//},
+		{
+			Name:        "DeleteVpc",
+			Usage:       "Deletes a VPC. Can't have any resources in VPC.",
+			Action:      VpcDeleteVpc,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1307",
 		},
 		{
 			Name:        "CreateSubnet",
-			Usage:       "Used to create new subnets",
+			Usage:       "Creates subnets in existing VPCs",
 			Action:      VpcCreateSubnet,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1314",
-		},
-		{
-			Name:        "DeleteSubnet",
-			Usage:       "Used to delete existing subnets",
-			Action:      VpcDeleteSubnet,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1312",
-		},
-		{
-			Name:        "ModifySubnetAttribute",
-			Usage:       "Used to change the name of a subnet",
-			Action:      VpcModifySubnetAttribute,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1313",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1314",
 		},
 		{
 			Name:        "DescribeSubnetEx",
-			Usage:       "Used to query list of subnets against existing VPC",
+			Usage:       "Queries subnet list",
 			Action:      VpcDescribeSubnetEx,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1371",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1371",
+		},
+		{
+			Name:        "ModifySubnetAttribute",
+			Usage:       "Queries subnet list",
+			Action:      VpcModifySubnetAttribute,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1313",
 		},
 		{
 			Name:        "DescribeSubnet",
-			Usage:       "Used to get details about a particular subnet",
+			Usage:       "Gives detailed infromation about particular subnet",
 			Action:      VpcDescribeSubnet,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1311",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1311",
+		},
+		{
+			Name:        "DeleteSubnet",
+			Usage:       "Deletes subnet.",
+			Action:      VpcDeleteSubnet,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1312",
 		},
 		{
 			Name:        "CreateRouteTable",
-			Usage:       "Used to create new route tables",
+			Usage:       "Creates a new route table",
 			Action:      VpcCreateRouteTable,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1419",
-		},
-		{
-			Name:        "DeleteRouteTable",
-			Usage:       "Used to delete route tables",
-			Action:      VpcDeleteRouteTable,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1418",
-		},
-		{
-			Name:        "ModifyRouteTableAttribute",
-			Usage:       "Used to modify route tables",
-			Action:      VpcModifyRouteTableAttribute,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1417",
-		},
-		{
-			Name:        "DescribeRouteTable",
-			Usage:       "Used to query route tables",
-			Action:      VpcDescribeRouteTable,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1420",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1419",
 		},
 		{
 			Name:        "AssociateRouteTable",
-			Usage:       "Used to associate route tables with subnets, and toggle off the association",
+			Usage:       "Associates a route table",
 			Action:      VpcAssociateRouteTable,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1416",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1416",
 		},
 		{
-			Name:        "CreateNetworkAcl",
-			Usage:       "Used to create a NACL",
-			Action:      VpcCreateNetworkAcl,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1437",
+			Name:        "InquiryVpnPrice",
+			Usage:       "Queries the cost of a VPN using period of time and bandwidth",
+			Action:      VpcInquiryVpnPrice,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5104",
 		},
 		{
-			Name:        "DeleteNetworkAcl",
-			Usage:       "Used to delete a NACL",
-			Action:      VpcDeleteNetworkAcl,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1439",
+			Name:        "DescribeVpnGw",
+			Usage:       "Returns information on existing VPN GWs",
+			Action:      VpcDescribeVpnGw,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5108",
 		},
 		{
-			Name:        "ModifyNetworkAcl",
-			Usage:       "Used to modify a NACL",
-			Action:      VpcModifyNetworkAcl,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1443",
+			Name:        "ModifyVpnGw",
+			Usage:       "Changes attributes of existing VPN GWs.",
+			Action:      VpcModifyVpnGw,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5107",
 		},
 		{
-			Name:        "DescribeNetworkAcl",
-			Usage:       "Used to describe NACLs",
-			Action:      VpcDescribeNetworkAcl,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1441",
+			Name:        "DescribeUserGwVendor",
+			Usage:       "Acquires information on supported peer GW vendors.",
+			Action:      VpcDescribeUserGwVendor,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5120",
 		},
 		{
-			Name:        "ModifyNetworkAclEntry",
-			Usage:       "Used to modify NACLs",
-			Action:      VpcModifyNetworkAclEntry,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1444",
+			Name:        "DescribeUserGw",
+			Usage:       "Lists user GWs",
+			Action:      VpcDescribeUserGw,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5119",
 		},
 		{
-			Name:        "CreateSubnetAclRule",
-			Usage:       "Used to associate NACLs with subnets",
-			Action:      VpcCreateSubnetAclRule,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1438",
+			Name:        "ModifyUserGw",
+			Usage:       "Acquires information on supported peer GW vendors.",
+			Action:      VpcModifyUserGw,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5118",
 		},
 		{
-			Name:        "DeteleSubnetAclRule",
-			Usage:       "Used to disassociate NACLs with subnets",
-			Action:      VpcDeteleSubnetAclRule,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/1442",
+			Name:        "CreateDirectConnectGateway",
+			Usage:       "Creates direct connect GW",
+			Action:      VpcCreateDirectConnectGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4824",
 		},
 		{
-			Name:        "DescribeVpcPeeringConnections",
-			Usage:       "Used to list VPC peering connections",
-			Action:      VpcDescribeVpcPeeringConnections,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/2101",
+			Name:        "DescribeDirectConnectGateway",
+			Usage:       "Queries list of direct connect GW",
+			Action:      VpcDescribeDirectConnectGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4827",
 		},
 		{
-			Name:        "CreateVpcPeeringConnection",
-			Usage:       "Used to create new intra-region VPC peering connections (same region)",
-			Action:      VpcCreateVpcPeeringConnection,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/2107",
+			Name:        "ModifyDirectConnectGateway",
+			Usage:       "Changes attribute of direct connect GW",
+			Action:      VpcModifyDirectConnectGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4826",
 		},
 		{
-			Name:        "DeleteVpcPeeringConnection",
-			Usage:       "Used to delete intra-region VPC peering connections (same region)",
-			Action:      VpcDeleteVpcPeeringConnection,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/2104",
+			Name:        "CreateLocalIPTranslationNatRule",
+			Usage:       "Creates a NAT rule on a direct connect GW",
+			Action:      VpcCreateLocalIPTranslationNatRule,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5185",
 		},
 		{
-			Name:        "ModifyVpcPeeringConnection",
-			Usage:       "Used to modify intra-region VPC peering connections (same region)",
-			Action:      VpcModifyVpcPeeringConnection,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/2103",
+			Name:        "DescribeLocalIPTranslationNatRule",
+			Usage:       "Describes a NAT rule on a direct connect GW",
+			Action:      VpcDescribeLocalIPTranslationNatRule,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5188",
 		},
 		{
-			Name:        "AcceptVpcPeeringConnection",
-			Usage:       "Used to accept intra-region VPC peering connections from another account (same region)",
-			Action:      VpcAcceptVpcPeeringConnection,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/2106",
-		},
-		{
-			Name:        "RejectVpcPeeringConnection",
-			Usage:       "Used to reject intra-region VPC peering connections from another account (same region)",
-			Action:      VpcRejectVpcPeeringConnection,
-			Description: "referrer: https://intl.cloud.tencent.com/document/api/215/2105",
-		},
-		{
-			Name:        "CreateVpcPeeringConnectionEx",
-			Usage:       "Used to create inter-region VPC peering connections from another account (different region)",
-			Action:      VpcCreateVpcPeeringConnectionEx,
-			Description: "referrer: https://intl.cloud.tencent.com/document/api/215/4803",
-		},
-		{
-			Name:        "DeleteVpcPeeringConnectionEx",
-			Usage:       "Used to delete inter-region VPC peering connections from another account (different region)",
-			Action:      VpcDeleteVpcPeeringConnectionEx,
-			Description: "referrer: https://intl.cloud.tencent.com/document/api/215/4804",
-		},
-		{
-			Name:        "ModifyVpcPeeringConnectionEx",
-			Usage:       "Used to modify inter-region VPC peering connections from another account (different region)",
-			Action:      VpcModifyVpcPeeringConnectionEx,
-			Description: "referrer: https://intl.cloud.tencent.com/document/api/215/4805",
-		},
-		{
-			Name:        "AcceptVpcPeeringConnectionEx",
-			Usage:       "Used to accept inter-region VPC peering connections from another account (different region)",
-			Action:      VpcAcceptVpcPeeringConnectionEx,
-			Description: "referrer: https://intl.cloud.tencent.com/document/api/215/4806",
-		},
-		{
-			Name:        "RejectVpcPeeringConnectionEx",
-			Usage:       "Used to reject inter-region VPC peering connections from another account (different region)",
-			Action:      VpcRejectVpcPeeringConnectionEx,
-			Description: "referrer: https://intl.cloud.tencent.com/document/api/215/4807",
+			Name:        "InquiryNatPrice",
+			Usage:       "Returns the cost of a NAT GW given n-concurrent connections",
+			Action:      VpcInquiryNatPrice,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4091",
 		},
 		{
 			Name:        "CreateNatGateway",
-			Usage:       "Used to create NAT GW",
+			Usage:       "Creates a NAT gateway",
 			Action:      VpcCreateNatGateway,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4094",
-		},
-		{
-			Name:        "DeleteNatGateway",
-			Usage:       "Used to delete NAT GW",
-			Action:      VpcDeleteNatGateway,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4087",
-		},
-		{
-			Name:        "ModifyNatGateway",
-			Usage:       "Used to modify NAT GW",
-			Action:      VpcModifyNatGateway,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4086",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4094",
 		},
 		{
 			Name:        "DescribeNatGateway",
-			Usage:       "Used to query NAT GW",
+			Usage:       "Describes a NAT gateway",
 			Action:      VpcDescribeNatGateway,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4088",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4088",
 		},
 		{
-			Name:        "QueryNatGatewayProductionStatus",
-			Usage:       "Used to query production status of NAT GW",
-			Action:      VpcQueryNatGatewayProductionStatus,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4089",
-		},
-		{
-			Name:        "UpgradeNatGateway",
-			Usage:       "Used to upgrade NAT GW",
-			Action:      VpcUpgradeNatGateway,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4090",
+			Name:        "ModifyNatGateway",
+			Usage:       "Modifies a NAT gateway",
+			Action:      VpcModifyNatGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4086",
 		},
 		{
 			Name:        "EipBindNatGateway",
-			Usage:       "Used to bind an EIP to a NAT GW",
+			Usage:       "Binds EIP to a  NAT gateway",
 			Action:      VpcEipBindNatGateway,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4093",
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4093",
+		},
+		// {
+		// 	Name:        "EipUnBindNatGateway",
+		// 	Usage:       "Unbinds EIP from a NAT gateway",
+		// 	Action:      VpcEipUnBindNatGateway,
+		// 	Description: "Referrer: https://cloud.tencent.com/document/api/215/4092",
+		// },
+		// {
+		// 	Name:        "CreateNetworkInterface",
+		// 	Usage:       "Creates ENI on specified subnet",
+		// 	Action:      VpcCreateNetworkInterface,
+		// 	Description: "Referrer: https://cloud.tencent.com/document/api/215/4811",
+		// },
+		{
+			Name:        "DescribeNetworkInterfaces",
+			Usage:       "Describes ENIs",
+			Action:      VpcDescribeNetworkInterfaces,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4814",
 		},
 		{
-			Name:        "EipUnBindNatGateway",
-			Usage:       "Used to unbind an EIP from a NAT GW",
-			Action:      VpcEipUnBindNatGateway,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4092",
+			Name:        "DeleteNatGateway",
+			Usage:       "Deletes a NAT gateway",
+			Action:      VpcDeleteNatGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4087",
 		},
 		{
-			Name:        "CreateNetworkInterface",
-			Usage:       "Used to create ENI",
-			Action:      VpcCreateNetworkInterface,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4811",
+			Name:        "ModifyLocalIPTranslationNatRule",
+			Usage:       "Modifies a NAT rule on a direct connect GW",
+			Action:      VpcModifyLocalIPTranslationNatRule,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5187",
 		},
 		{
-			Name:        "DeleteNetworkInterface",
-			Usage:       "Used to delete ENI",
-			Action:      VpcDeleteNetworkInterface,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4813",
+			Name:        "DeleteLocalIPTranslationNatRule",
+			Usage:       "Deletes a NAT rule on a direct connect GW",
+			Action:      VpcDeleteLocalIPTranslationNatRule,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5186",
 		},
 		{
-			Name:        "ModifyNetworkInterface",
-			Usage:       "Used to modify ENI",
-			Action:      VpcModifyNetworkInterface,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/5372",
+			Name:        "DeleteDirectConnectGateway",
+			Usage:       "Deletes an existing direct connect GW",
+			Action:      VpcDeleteDirectConnectGateway,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/4825",
 		},
 		{
-			Name:        "AssignPrivateIpAddresses",
-			Usage:       "Used to assign private IP address to ENI",
-			Action:      VpcAssignPrivateIpAddresses,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4817",
+			Name:        "DeleteUserGw",
+			Usage:       "Deletes peered GW.",
+			Action:      VpcDeleteUserGw,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5117",
+		},
+		{
+			Name:        "CreateNetworkAcl",
+			Usage:       "Creates a new NACL.",
+			Action:      VpcCreateNetworkAcl,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1437",
+		},
+		{
+			Name:        "CreateSubnetAclRule",
+			Usage:       "Binds NACL to subnet.",
+			Action:      VpcCreateNetworkAcl,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1438",
+		},
+		{
+			Name:        "DeteleSubnetAclRule",
+			Usage:       "Unbinds NACL from subnet.",
+			Action:      VpcDeleteNetworkAcl,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1442",
+		},
+		{
+			Name:        "DescribeNetworkAcl",
+			Usage:       "Queries NACL list",
+			Action:      VpcDescribeNetworkAcl,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1441",
+		},
+		{
+			Name:        "ModifyNetworkAcl",
+			Usage:       "Changes the name of NACL",
+			Action:      VpcModifyNetworkAcl,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1443",
+		},
+		{
+			Name:        "ModifyNetworkAclEntry",
+			Usage:       "Add rules to NACL",
+			Action:      VpcModifyNetworkAclEntry,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1444",
+		},
+		{
+			Name:        "DeleteNetworkAcl",
+			Usage:       "Deletes existing NACL.",
+			Action:      VpcDeleteNetworkAcl,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1439",
+		},
+		{
+			Name:        "CreateVpcPeeringConnection",
+			Usage:       "Creates a VPC peering connection",
+			Action:      VpcCreateVpcPeeringConnection,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/2107",
+		},
+		{
+			Name:        "DescribeVpcPeeringConnections",
+			Usage:       "Lists all existing VPC peering connections",
+			Action:      VpcDescribeVpcPeeringConnections,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/2101",
+		},
+		{
+			Name:        "DeleteVpcPeeringConnection",
+			Usage:       "Deletes a VPC peering connection.",
+			Action:      VpcDeleteVpcPeeringConnection,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/2104",
+		},
+		{
+			Name:        "DescribeRouteTable",
+			Usage:       "Describes RTs.",
+			Action:      VpcDescribeRouteTable,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1420",
+		},
+		{
+			Name:        "CreateRoute",
+			Usage:       "Creates a route in specified RT",
+			Action:      VpcCreateRoute,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5688",
+		},
+		{
+			Name:        "DeleteRoute",
+			Usage:       "Deletes a route in specified RT",
+			Action:      VpcDeleteRoute,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/5689",
+		},
+		{
+			Name:        "DeleteRouteTable",
+			Usage:       "Deletes RT.",
+			Action:      VpcDeleteRouteTable,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1418",
+		},
+		{
+			Name:        "ModifyRouteTableAttribute",
+			Usage:       "Modifies RT attribute.",
+			Action:      VpcModifyRouteTableAttribute,
+			Description: "Referrer: https://cloud.tencent.com/document/api/215/1417",
 		},
 		{
 			Name:        "AttachNetworkInterface",
-			Usage:       "Used to request private IP to ENI",
+			Usage:       "Attaches network interface to instance in vpc",
 			Action:      VpcAttachNetworkInterface,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4820",
-		},
-		{
-			Name:        "DescribeNetworkInterfaces",
-			Usage:       "Used to query ENI",
-			Action:      VpcDescribeNetworkInterfaces,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4814",
-		},
-		{
-			Name:        "DetachNetworkInterface",
-			Usage:       "Used to unbind ENIs",
-			Action:      VpcDetachNetworkInterface,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4822",
-		},
-		{
-			Name:        "MigrateNetworkInterface",
-			Usage:       "Used to migrate ENI",
-			Action:      VpcMigrateNetworkInterface,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/5384",
-		},
-		{
-			Name:        "MigratePrivateIpAddress",
-			Usage:       "Used to migrate private IPs",
-			Action:      VpcMigratePrivateIpAddress,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/5385",
-		},
-		{
-			Name:        "UnassignPrivateIpAddresses",
-			Usage:       "Used to return the IP of ENI",
-			Action:      VpcUnassignPrivateIpAddresses,
-			Description: "referrer: https://cloud.tencent.com/document/api/215/4819",
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/8836 ",
 		},
 	}
 )
@@ -350,759 +354,665 @@ func VpcDoAction(c *cli.Context) error {
 	fmt.Println(string(resp))
 	return nil
 }
-
 func VpcCreateVpc(c *cli.Context) error {
 	resp, err := vpc.CreateVpc(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDeleteVpc(c *cli.Context) error {
-	resp, err := vpc.DeleteVpc(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
 func VpcDescribeVpcEx(c *cli.Context) error {
 	resp, err := vpc.DescribeVpcEx(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcModifyVpcAttribute(c *cli.Context) error {
-	resp, err := vpc.ModifyVpcAttribute(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcAttachClassicLinkVpc(c *cli.Context) error {
-	resp, err := vpc.AttachClassicLinkVpc(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
 func VpcDescribeVpcClassicLink(c *cli.Context) error {
 	resp, err := vpc.DescribeVpcClassicLink(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDetachClassicLinkVpc(c *cli.Context) error {
-	resp, err := vpc.DetachClassicLinkVpc(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
 func VpcDescribeVpcLimit(c *cli.Context) error {
 	resp, err := vpc.DescribeVpcLimit(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
+	return nil
+}
+func VpcModifyVpcAttribute(c *cli.Context) error {
+	resp, err := vpc.ModifyVpcAttribute(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }
 
+// func VpcAssociateVip(c *cli.Context) error {
+// 	resp, err := vpc.AssociateVip(c.Args()...)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	r, err := resp.String(formatOut)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	fmt.Println(r)
+// 	return nil
+// }
+//func VpcAttachClassicLinkVpc(c *cli.Context) error {
+//	resp, err := vpc.AttachClassicLinkVpc(c.Args()...)
+//	if err != nil {
+//		return err
+//	}
+//	r, err := resp.String(formatOut)
+//	if err != nil {
+//		return err
+//	}
+//	fmt.Println(r)
+//	return nil
+//}
+func VpcDeleteVpc(c *cli.Context) error {
+	resp, err := vpc.DeleteVpc(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
 func VpcCreateSubnet(c *cli.Context) error {
 	resp, err := vpc.CreateSubnet(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDeleteSubnet(c *cli.Context) error {
-	resp, err := vpc.DeleteSubnet(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcModifySubnetAttribute(c *cli.Context) error {
-	resp, err := vpc.ModifySubnetAttribute(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
 func VpcDescribeSubnetEx(c *cli.Context) error {
 	resp, err := vpc.DescribeSubnetEx(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
 func VpcDescribeSubnet(c *cli.Context) error {
 	resp, err := vpc.DescribeSubnet(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
+func VpcDeleteSubnet(c *cli.Context) error {
+	resp, err := vpc.DeleteSubnet(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
 func VpcCreateRouteTable(c *cli.Context) error {
 	resp, err := vpc.CreateRouteTable(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDeleteRouteTable(c *cli.Context) error {
-	resp, err := vpc.DeleteRouteTable(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcModifyRouteTableAttribute(c *cli.Context) error {
-	resp, err := vpc.ModifyRouteTableAttribute(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcDescribeRouteTable(c *cli.Context) error {
-	resp, err := vpc.DescribeRouteTable(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
 func VpcAssociateRouteTable(c *cli.Context) error {
 	resp, err := vpc.AssociateRouteTable(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcCreateNetworkAcl(c *cli.Context) error {
-	resp, err := vpc.CreateNetworkAcl(c.Args()...)
+func VpcInquiryVpnPrice(c *cli.Context) error {
+	resp, err := vpc.InquiryVpnPrice(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDeleteNetworkAcl(c *cli.Context) error {
-	resp, err := vpc.DeleteNetworkAcl(c.Args()...)
+func VpcDescribeVpnGw(c *cli.Context) error {
+	resp, err := vpc.DescribeVpnGw(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcModifyNetworkAcl(c *cli.Context) error {
-	resp, err := vpc.ModifyNetworkAcl(c.Args()...)
+func VpcModifyVpnGw(c *cli.Context) error {
+	resp, err := vpc.ModifyVpnGw(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDescribeNetworkAcl(c *cli.Context) error {
-	resp, err := vpc.DescribeNetworkAcl(c.Args()...)
+func VpcDescribeUserGwVendor(c *cli.Context) error {
+	resp, err := vpc.DescribeUserGwVendor(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcModifyNetworkAclEntry(c *cli.Context) error {
-	resp, err := vpc.ModifyNetworkAclEntry(c.Args()...)
+func VpcDescribeUserGw(c *cli.Context) error {
+	resp, err := vpc.DescribeUserGw(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcCreateSubnetAclRule(c *cli.Context) error {
-	resp, err := vpc.CreateSubnetAclRule(c.Args()...)
+func VpcModifyUserGw(c *cli.Context) error {
+	resp, err := vpc.ModifyUserGw(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDeteleSubnetAclRule(c *cli.Context) error {
-	resp, err := vpc.DeteleSubnetAclRule(c.Args()...)
+func VpcCreateDirectConnectGateway(c *cli.Context) error {
+	resp, err := vpc.CreateDirectConnectGateway(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDescribeVpcPeeringConnections(c *cli.Context) error {
-	resp, err := vpc.DescribeVpcPeeringConnections(c.Args()...)
+func VpcDescribeDirectConnectGateway(c *cli.Context) error {
+	resp, err := vpc.DescribeDirectConnectGateway(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcCreateVpcPeeringConnection(c *cli.Context) error {
-	resp, err := vpc.CreateVpcPeeringConnection(c.Args()...)
+func VpcModifyDirectConnectGateway(c *cli.Context) error {
+	resp, err := vpc.ModifyDirectConnectGateway(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDeleteVpcPeeringConnection(c *cli.Context) error {
-	resp, err := vpc.DeleteVpcPeeringConnection(c.Args()...)
+func VpcCreateLocalIPTranslationNatRule(c *cli.Context) error {
+	resp, err := vpc.CreateLocalIPTranslationNatRule(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcModifyVpcPeeringConnection(c *cli.Context) error {
-	resp, err := vpc.ModifyVpcPeeringConnection(c.Args()...)
+func VpcDescribeLocalIPTranslationNatRule(c *cli.Context) error {
+	resp, err := vpc.DescribeLocalIPTranslationNatRule(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcAcceptVpcPeeringConnection(c *cli.Context) error {
-	resp, err := vpc.AcceptVpcPeeringConnection(c.Args()...)
+func VpcInquiryNatPrice(c *cli.Context) error {
+	resp, err := vpc.InquiryNatPrice(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcRejectVpcPeeringConnection(c *cli.Context) error {
-	resp, err := vpc.RejectVpcPeeringConnection(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcCreateVpcPeeringConnectionEx(c *cli.Context) error {
-	resp, err := vpc.CreateVpcPeeringConnectionEx(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcDeleteVpcPeeringConnectionEx(c *cli.Context) error {
-	resp, err := vpc.DeleteVpcPeeringConnectionEx(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcModifyVpcPeeringConnectionEx(c *cli.Context) error {
-	resp, err := vpc.ModifyVpcPeeringConnectionEx(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcAcceptVpcPeeringConnectionEx(c *cli.Context) error {
-	resp, err := vpc.AcceptVpcPeeringConnectionEx(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcRejectVpcPeeringConnectionEx(c *cli.Context) error {
-	resp, err := vpc.RejectVpcPeeringConnectionEx(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
 func VpcCreateNatGateway(c *cli.Context) error {
 	resp, err := vpc.CreateNatGateway(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDeleteNatGateway(c *cli.Context) error {
-	resp, err := vpc.DeleteNatGateway(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcModifyNatGateway(c *cli.Context) error {
-	resp, err := vpc.ModifyNatGateway(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
 func VpcDescribeNatGateway(c *cli.Context) error {
 	resp, err := vpc.DescribeNatGateway(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcQueryNatGatewayProductionStatus(c *cli.Context) error {
-	resp, err := vpc.QueryNatGatewayProductionStatus(c.Args()...)
+func VpcModifyNatGateway(c *cli.Context) error {
+	resp, err := vpc.ModifyNatGateway(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcUpgradeNatGateway(c *cli.Context) error {
-	resp, err := vpc.UpgradeNatGateway(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
 func VpcEipBindNatGateway(c *cli.Context) error {
 	resp, err := vpc.EipBindNatGateway(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
 
-func VpcEipUnBindNatGateway(c *cli.Context) error {
-	resp, err := vpc.EipUnBindNatGateway(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcCreateNetworkInterface(c *cli.Context) error {
-	resp, err := vpc.CreateNetworkInterface(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcDeleteNetworkInterface(c *cli.Context) error {
-	resp, err := vpc.DeleteNetworkInterface(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcModifyNetworkInterface(c *cli.Context) error {
-	resp, err := vpc.ModifyNetworkInterface(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcAssignPrivateIpAddresses(c *cli.Context) error {
-	resp, err := vpc.AssignPrivateIpAddresses(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
-func VpcAttachNetworkInterface(c *cli.Context) error {
-	resp, err := vpc.AttachNetworkInterface(c.Args()...)
-	if err != nil {
-		return err
-	}
-	b, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(b))
-	return nil
-}
-
+// func VpcEipUnBindNatGateway(c *cli.Context) error {
+// 	resp, err := vpc.EipBindNatGateway(c.Args()...)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	r, err := resp.String(formatOut)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	fmt.Println(r)
+// 	return nil
+// }
+// func VpcCreateNetworkInterface(c *cli.Context) error {
+// 	resp, err := vpc.CreateNetworkInterface(c.Args()...)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	r, err := resp.String(formatOut)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	fmt.Println(r)
+// 	return nil
+// }
 func VpcDescribeNetworkInterfaces(c *cli.Context) error {
 	resp, err := vpc.DescribeNetworkInterfaces(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcDetachNetworkInterface(c *cli.Context) error {
-	resp, err := vpc.DetachNetworkInterface(c.Args()...)
+func VpcDeleteNatGateway(c *cli.Context) error {
+	resp, err := vpc.DeleteNatGateway(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcMigrateNetworkInterface(c *cli.Context) error {
-	resp, err := vpc.MigrateNetworkInterface(c.Args()...)
+func VpcModifyLocalIPTranslationNatRule(c *cli.Context) error {
+	resp, err := vpc.ModifyLocalIPTranslationNatRule(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcMigratePrivateIpAddress(c *cli.Context) error {
-	resp, err := vpc.MigratePrivateIpAddress(c.Args()...)
+func VpcDeleteLocalIPTranslationNatRule(c *cli.Context) error {
+	resp, err := vpc.DeleteLocalIPTranslationNatRule(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
 	return nil
 }
-
-func VpcUnassignPrivateIpAddresses(c *cli.Context) error {
-	resp, err := vpc.UnassignPrivateIpAddresses(c.Args()...)
+func VpcDeleteDirectConnectGateway(c *cli.Context) error {
+	resp, err := vpc.DeleteDirectConnectGateway(c.Args()...)
 	if err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(resp, "", "  ")
+	r, err := resp.String(formatOut)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(b))
+	fmt.Println(r)
+	return nil
+}
+func VpcDeleteUserGw(c *cli.Context) error {
+	resp, err := vpc.DeleteUserGw(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcCreateVpcPeeringConnection(c *cli.Context) error {
+	resp, err := vpc.CreateVpcPeeringConnection(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDescribeVpcPeeringConnections(c *cli.Context) error {
+	resp, err := vpc.DescribeVpcPeeringConnections(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDeleteVpcPeeringConnection(c *cli.Context) error {
+	resp, err := vpc.DeleteVpcPeeringConnection(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDescribeRouteTable(c *cli.Context) error {
+	resp, err := vpc.DescribeRouteTable(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDeleteRouteTable(c *cli.Context) error {
+	resp, err := vpc.DeleteRouteTable(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcCreateRoute(c *cli.Context) error {
+	resp, err := vpc.CreateRoute(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDeleteRoute(c *cli.Context) error {
+	resp, err := vpc.DeleteRoute(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifyRouteTableAttribute(c *cli.Context) error {
+	resp, err := vpc.ModifyRouteTableAttribute(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcCreateNetworkAcl(c *cli.Context) error {
+	resp, err := vpc.CreateNetworkAcl(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDescribeNetworkAcl(c *cli.Context) error {
+	resp, err := vpc.DescribeNetworkAcl(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDeleteNetworkAcl(c *cli.Context) error {
+	resp, err := vpc.DeleteNetworkAcl(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifyNetworkAcl(c *cli.Context) error {
+	resp, err := vpc.ModifyNetworkAcl(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifyNetworkAclEntry(c *cli.Context) error {
+	resp, err := vpc.ModifyNetworkAclEntry(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcCreateSubnetAclRule(c *cli.Context) error {
+	resp, err := vpc.CreateSubnetAclRule(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcDeteleSubnetAclRule(c *cli.Context) error {
+	resp, err := vpc.DeteleSubnetAclRule(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcModifySubnetAttribute(c *cli.Context) error {
+	resp, err := vpc.ModifySubnetAttribute(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func VpcAttachNetworkInterface(c *cli.Context) error {
+	resp, err := vpc.AttachNetworkInterface(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
 	return nil
 }

@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-var VER = "1.0.0"
+var VER = "1.1.0"
 var buildtime string
 var formatOut string
 
@@ -60,6 +60,9 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 			Name:        "cvm",
 			Usage:       "cvm function",
 			Subcommands: funcCvm,
+			Description: `Only supports current API version.
+			For old API support, must use "tcpicli do cvm..."
+			https://cloud.tencent.com/document/api/213/569`,
 		},
 		{
 			Name:        "img",
@@ -76,11 +79,25 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 			Usage:       "cmq function",
 			Subcommands: funcCmq,
 		},
-
+		{
+			Name:        "eip",
+			Usage:       "Elastic IP",
+			Subcommands: funcEip,
+		},
 		{
 			Name:        "dfw",
 			Usage:       "Cloud FireWall",
 			Subcommands: funcDfw,
+		},
+		{
+			Name:        "lb",
+			Usage:       "Cloud LoadBalancer",
+			Subcommands: funcLb,
+		},
+		{
+			Name:        "vod",
+			Usage:       "Video on Demand",
+			Subcommands: funcVod,
 		},
 		{
 			Name:        "account",
