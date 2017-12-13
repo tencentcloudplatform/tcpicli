@@ -7,7 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	// 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -35,17 +35,18 @@ import (
 	*@return       params       params of qcloud openapi interfac include Signature
 **/
 
-var (
-	Log = log.New(ioutil.Discard, "", log.LstdFlags)
-)
-
 type Client struct {
 	httpClient *http.Client
-	requesturl string
-	verbose    bool
+	lg         *log.Logger
 }
 
-func NewClient(requesturl string, verbose bool) *Client {
+var DefaultClient *Client
+
+func init() {
+	DefaultClient = NewClient()
+}
+
+func NewClient() *Client {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
@@ -54,13 +55,16 @@ func NewClient(requesturl string, verbose bool) *Client {
 			Transport: tr,
 			Timeout:   time.Duration(30) * time.Second,
 		},
-		requesturl: requesturl,
-		verbose:    verbose,
+		lg: log.New(ioutil.Discard, "", log.LstdFlags),
 	}
 	return c
 }
 
-func (c *Client) signature(method string, params map[string]interface{}) map[string]interface{} {
+func (c *Client) SetLog(out io.Writer, prefix string, flag int) {
+	c.lg = log.New(out, prefix, flag)
+}
+
+func (c *Client) signature(method, requesturl string, params map[string]interface{}) map[string]interface{} {
 	/*add common params*/
 	timestamp := time.Now().Unix()
 	rd := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(1000)
@@ -69,7 +73,7 @@ func (c *Client) signature(method string, params map[string]interface{}) map[str
 	params["SecretId"] = config.SecretId
 	params["SignatureMethod"] = "HmacSHA256"
 	/**sort all the params to make signPlainText**/
-	sigUrl := method + c.requesturl + "?"
+	sigUrl := method + requesturl + "?"
 	var keys []string
 	for k := range params {
 		keys = append(keys, k)
@@ -127,31 +131,30 @@ func toCamelName(name string) string {
 	return res
 }
 
-func (c *Client) SendRequest(method string, params map[string]interface{}) (*http.Response, error) {
+func (c *Client) SendRequest(method, requesturl string, params map[string]interface{}) (*http.Response, error) {
 	fixParams(params)
 	j, err := json.MarshalIndent(params, "", "  ")
 	if err != nil {
-		Log.Println(err.Error())
+		c.lg.Println(err.Error())
 	}
-	Log.Println(string(j))
-	p := c.signature(method, params)
+	c.lg.Println(string(j))
+	p := c.signature(method, requesturl, params)
 
-	requesturl := "https://" + c.requesturl
-	if config.Internal {
-		requesturl = "http://" + c.requesturl
+	if strings.HasPrefix(requesturl, "http://") || strings.HasPrefix(requesturl, "https://") {
+	} else {
+		requesturl = "https://" + requesturl
+		if config.Internal {
+			requesturl = "http://" + requesturl
+		}
 	}
-	// 	var response string
 	if method == "GET" {
 		params_str := "?" + ParamsToStr(p)
 		requesturl = requesturl + params_str
-		// 		response, err := c.httpGet(requesturl)
-		return c.httpGet(c.requesturl)
+		return c.httpGet(requesturl)
 	} else if method == "POST" {
 		return c.httpPost(requesturl, p)
 	}
-	// 		fmt.Println("unsuppported http method")
 	return nil, errors.New("unsuppported http method")
-	// 	return response
 }
 
 func typeSwitcher(t interface{}) string {
@@ -175,9 +178,6 @@ func ParamsToStr(params map[string]interface{}) string {
 			requesturl = requesturl + "&"
 		}
 		isfirst = false
-		//		if strings.Contains(k, "_") {
-		//			strings.Replace(k, ".", "_", -1)
-		//		}
 		v := typeSwitcher(v)
 		requesturl = requesturl + k + "=" + url.QueryEscape(v)
 	}
@@ -189,7 +189,6 @@ func sign(signPlainText string, secretKey string) string {
 	hash := hmac.New(sha256.New, key)
 	hash.Write([]byte(signPlainText))
 	sig := base64.StdEncoding.EncodeToString([]byte(string(hash.Sum(nil))))
-	// 	encd_sig := url.QueryEscape(sig)
 	return sig
 }
 
@@ -208,11 +207,6 @@ func (c *Client) httpPost(requesturl string, params map[string]interface{}) (*ht
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
-	Log.Println(req.URL.String(), ParamsToStr(params))
-	/*
-		req, err := http.NewRequest("POST", requesturl, strings.NewReader(form.Encode()))
-		fmt.Println(strings.NewReader(form.Encode()))
-	*/
-	// 	client := &http.Client{Transport: tr, Timeout: time.Duration(3) * time.Second}
+	c.lg.Println(req.URL.String(), ParamsToStr(params))
 	return c.httpClient.Do(req)
 }

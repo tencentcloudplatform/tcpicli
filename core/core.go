@@ -12,14 +12,19 @@ import (
 const PWD = `github.com/tencentcloudplatform/tcpicli/core`
 
 func DoAction(service, action string, options ...string) ([]byte, error) {
-	client := NewClient(Endpoint[service], true)
+	return DefaultClient.DoAction(service, action, options...)
+}
+
+func (client *Client) DoAction(service, action string, options ...string) ([]byte, error) {
+	// 	client := NewClient(Endpoint[service], true)
 	method := "POST"
+	requesturl := Endpoint[service]
 
 	params := make(map[string]interface{})
 	params["Action"] = action
 	AssignParams(params, options...)
 
-	resp, err := client.SendRequest(method, params)
+	resp, err := client.SendRequest(method, requesturl, params)
 	if err != nil {
 		return nil, err
 	}

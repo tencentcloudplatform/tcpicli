@@ -16,14 +16,18 @@ type AddCdnHostResp struct {
 }
 
 // Implement https://cloud.tencent.com/document/api/228/1406
-func AddCdnHost(options ...string) (*AddCdnHostResp, error) {
-	resp, err := DoAction("AddCdnHost", options...)
+func (c *CdnClient) AddCdnHost(options ...string) (*AddCdnHostResp, error) {
+	resp, err := c.DoAction("AddCdnHost", options...)
 	if err != nil {
 		return nil, err
 	}
 	var s AddCdnHostResp
 	err = json.Unmarshal(resp, &s)
 	return &s, err
+}
+
+func AddCdnHost(options ...string) (*AddCdnHostResp, error) {
+	return DefaultClient.AddCdnHost(options...)
 }
 
 func (r *AddCdnHostResp) String(args ...interface{}) (string, error) {

@@ -4,7 +4,15 @@ import (
 	"github.com/tencentcloudplatform/tcpicli/core"
 )
 
-var requesturl string = core.Endpoint["cvm"]
+type CvmClient struct {
+	core.Client
+}
+
+var DefaultClient = CvmClient{Client: *core.NewClient()}
+
+func NewClient() *CvmClient {
+	return &CvmClient{Client: *core.NewClient()}
+}
 
 func DoAction(action string, options ...string) ([]byte, error) {
 	version, ok := core.HasVersion(options...)
@@ -17,5 +25,9 @@ func DoAction(action string, options ...string) ([]byte, error) {
 		region = core.DefaultRegion()
 		options = append(options, "Region="+region)
 	}
-	return core.DoAction("cvm", action, options...)
+	return DefaultClient.Client.DoAction("cvm", action, options...)
+}
+
+func (client *CvmClient) DoAction(action string, options ...string) ([]byte, error) {
+	return client.Client.DoAction("cvm", action, options...)
 }

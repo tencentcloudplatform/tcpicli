@@ -4,7 +4,15 @@ import (
 	"github.com/tencentcloudplatform/tcpicli/core"
 )
 
-var requesturl string = core.Endpoint["lb"]
+type LbClient struct {
+	core.Client
+}
+
+var DefaultClient = LbClient{Client: *core.NewClient()}
+
+func NewClient() *LbClient {
+	return &LbClient{Client: *core.NewClient()}
+}
 
 func DoAction(action string, options ...string) ([]byte, error) {
 	region, ok := core.HasRegion(options...)
@@ -12,5 +20,10 @@ func DoAction(action string, options ...string) ([]byte, error) {
 		region = core.DefaultRegion()
 		options = append(options, "Region="+region)
 	}
-	return core.DoAction("lb", action, options...)
+
+	return DefaultClient.Client.DoAction("lb", action, options...)
+}
+
+func (client *LbClient) DoAction(action string, options ...string) ([]byte, error) {
+	return client.Client.DoAction("lb", action, options...)
 }

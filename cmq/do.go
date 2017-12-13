@@ -11,14 +11,14 @@ import (
 //go:generate go run gen.go
 
 func doAction(endpoint string, action string, options ...string) ([]byte, error) {
-	client := core.NewClient(endpoint, true)
+	client := core.NewClient()
 	method := "POST"
 
 	params := make(map[string]interface{})
 	params["Action"] = action
 	core.AssignParams(params, options...)
 
-	resp, err := client.SendRequest(method, params)
+	resp, err := client.SendRequest(method, endpoint, params)
 	if err != nil {
 		return nil, err
 	}
