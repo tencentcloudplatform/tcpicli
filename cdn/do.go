@@ -10,6 +10,10 @@ type CdnClient struct {
 
 var DefaultClient = CdnClient{Client: *core.NewClient()}
 
+func NewClient() *CdnClient {
+	return &CdnClient{Client: *core.NewClient()}
+}
+
 func DoAction(action string, options ...string) ([]byte, error) {
 	return DefaultClient.Client.DoAction("cdn", action, options...)
 }

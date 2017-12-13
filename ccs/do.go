@@ -4,13 +4,20 @@ import (
 	"github.com/tencentcloudplatform/tcpicli/core"
 )
 
-var requesturl string = core.Endpoint["ccs"]
+type CcsClient struct {
+	core.Client
+}
+
+var DefaultClient = CcsClient{Client: *core.NewClient()}
+
+func NewClient() *CcsClient {
+	return &CcsClient{Client: *core.NewClient()}
+}
 
 func DoAction(action string, options ...string) ([]byte, error) {
-	region, ok := core.HasRegion(options...)
-	if !ok {
-		region = core.DefaultRegion()
-		options = append(options, "Region="+region)
-	}
-	return core.DoAction("ccs", action, options...)
+	return DefaultClient.Client.DoAction("ccs", action, options...)
+}
+
+func (client *CcsClient) DoAction(action string, options ...string) ([]byte, error) {
+	return client.Client.DoAction("ccs", action, options...)
 }

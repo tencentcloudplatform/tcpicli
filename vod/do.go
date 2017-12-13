@@ -4,13 +4,20 @@ import (
 	"github.com/tencentcloudplatform/tcpicli/core"
 )
 
-var requesturl string = core.Endpoint["vod"]
+type VodClient struct {
+	core.Client
+}
+
+var DefaultClient = VodClient{Client: *core.NewClient()}
+
+func NewClient() *VodClient {
+	return &VodClient{Client: *core.NewClient()}
+}
 
 func DoAction(action string, options ...string) ([]byte, error) {
-	region, ok := core.HasRegion(options...)
-	if !ok {
-		region = core.DefaultRegion()
-		options = append(options, "Region="+region)
-	}
-	return core.DoAction("vod", action, options...)
+	return DefaultClient.Client.DoAction("vod", action, options...)
+}
+
+func (client *VodClient) DoAction(action string, options ...string) ([]byte, error) {
+	return client.Client.DoAction("vod", action, options...)
 }

@@ -4,13 +4,20 @@ import (
 	"github.com/tencentcloudplatform/tcpicli/core"
 )
 
-var requesturl string = core.Endpoint["vpc"]
+type VpcClient struct {
+	core.Client
+}
+
+var DefaultClient = VpcClient{Client: *core.NewClient()}
+
+func NewClient() *VpcClient {
+	return &VpcClient{Client: *core.NewClient()}
+}
 
 func DoAction(action string, options ...string) ([]byte, error) {
-	region, ok := core.HasRegion(options...)
-	if !ok {
-		region = core.DefaultRegion()
-		options = append(options, "Region="+region)
-	}
-	return core.DoAction("vpc", action, options...)
+	return DefaultClient.Client.DoAction("vpc", action, options...)
+}
+
+func (client *VpcClient) DoAction(action string, options ...string) ([]byte, error) {
+	return client.Client.DoAction("vpc", action, options...)
 }
