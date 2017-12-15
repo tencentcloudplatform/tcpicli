@@ -25,6 +25,7 @@ type Gen struct {
 	SliceOptions map[string]string
 	FuncMap      map[string][]string
 	FixStruct    map[string][]string
+	Version      map[string][]string
 	PkgName      string
 	Pkg          Pkg
 }
@@ -125,6 +126,17 @@ func main() {
 			}
 		}
 
+		if version, ok := g.Version[action]; ok {
+			responseField := version[0]
+			versionErr := "`json:\"" + responseField + ",omitempty\"`\nError interface{} `json:\"Error,omitempty\"`"
+
+			re, err := regexp.Compile("(`json:\"" + responseField + "\"`)")
+			if err != nil {
+				log.Println(responseField, err.Error())
+			}
+			s = re.ReplaceAllString(s, versionErr)
+		}
+
 		hasSliceOptions := func(action string) string {
 			if val, ok := g.SliceOptions[action]; ok {
 				return val
@@ -160,6 +172,7 @@ func main() {
 		}
 
 		// exclude first line timestamp
+
 		currentS := strings.Join(strings.Split(string(current), "\n")[1:], "\n")
 		bufS := strings.Join(strings.Split(buf.String(), "\n")[1:], "\n")
 
