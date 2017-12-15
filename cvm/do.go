@@ -15,6 +15,10 @@ func NewClient() *CvmClient {
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {
+	return DefaultClient.Client.DoAction("cvm", action, options...)
+}
+
+func (client *CvmClient) DoAction(action string, options ...string) ([]byte, error) {
 	version, ok := core.HasVersion(options...)
 	if !ok {
 		version = "2017-03-12"
@@ -25,9 +29,5 @@ func DoAction(action string, options ...string) ([]byte, error) {
 		region = core.DefaultRegion()
 		options = append(options, "Region="+region)
 	}
-	return DefaultClient.Client.DoAction("cvm", action, options...)
-}
-
-func (client *CvmClient) DoAction(action string, options ...string) ([]byte, error) {
 	return client.Client.DoAction("cvm", action, options...)
 }
