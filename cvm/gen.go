@@ -39,6 +39,9 @@ func main() {
 
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
+		Version: map[string][]string{
+			"DescribeInstances": {"InstanceSet"},
+		},
 		Seq: []string{
 			// CreateVpc & CreateSubnet to run autogen cvm stuff on and capture their id and unId
 			// `DO tcpicli vpc CreateVpc ` + region + " " + vpcName + " " + cidrBlock,
@@ -52,7 +55,7 @@ func main() {
 			// `SET imageId=tcpicli img DescribeImages Version=2017-03-12 | grep -E -B1 -i "centos.*7\.3.*64" | grep -i imageid | awk '{ print $2 }' | tr -d "\"," | head -n1`,
 			// `DO echo $imageId`,
 			// "RunInstances",
-			// "DescribeInstances"
+			"DescribeInstances",
 			// `SET instanceId=tcpicli -f '{{range .Response.InstanceSet}}{{if eq .InstanceName "tcpiclicvmgenmod"}}{{.InstanceID}}{{end}}{{end}}' cvm DescribeInstances ` + region,
 			// `DO echo $instanceId`,
 			// `SET diskId=tcpicli -f "{{range .Response.InstanceSet}}{{range .DataDisks}}{{.DiskId}}{{end}}{{end}}" cvm DescribeInstances ` + region + " " + vagueInstanceName,
@@ -79,11 +82,11 @@ func main() {
 			// "DescribeInstanceInternetBandwidthConfigs",
 			// "DescribeKeyPairs",
 			// "CreateKeyPair",
-			`SET keyId=tcpicli -f '{{range .Response.KeyPairSet}}{{if eq .KeyName "` + keyName + `"}}{{.KeyID}}{{end}}{{end}}' cvm DescribeKeyPairs ` + version + " " + region,
-			`DO echo $keyId`,
+			// `SET keyId=tcpicli -f '{{range .Response.KeyPairSet}}{{if eq .KeyName "` + keyName + `"}}{{.KeyID}}{{end}}{{end}}' cvm DescribeKeyPairs ` + version + " " + region,
+			// `DO echo $keyId`,
 			// "ModifyKeyPairAttribute",
 			// "DeleteKeyPairs",
-			"ImportKeyPair",
+			// "ImportKeyPair",
 			// "AssociateInstancesKeyPairs",
 			// "DisassociateInstancesKeyPairs",
 			// Delete VPC stuff
