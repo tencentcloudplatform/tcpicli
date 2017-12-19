@@ -128,8 +128,13 @@ func main() {
 
 		if version, ok := g.Version[action]; ok {
 			responseField := version[0]
-			versionErr := "`json:\"" + responseField + ",omitempty\"`\nError interface{} `json:\"Error,omitempty\"`"
-
+			var versionErr string
+			if len(responseField) == 0 {
+				responseField = "RequestId"
+				versionErr = "`json:\"" + responseField + "\"`\nError interface{} `json:\"Error,omitempty\"`"
+			} else if len(responseField) > 0 {
+				versionErr = "`json:\"" + responseField + ",omitempty\"`\nError interface{} `json:\"Error,omitempty\"`"
+			}
 			re, err := regexp.Compile("(`json:\"" + responseField + "\"`)")
 			if err != nil {
 				log.Println(responseField, err.Error())
