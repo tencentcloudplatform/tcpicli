@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"log"
 	"os"
 	"text/template"
 )
@@ -46,6 +47,17 @@ func (client *Client) DoAction(service, action string, options ...string) ([]byt
 	if val, ok := m["code"]; ok {
 		if val.(float64) != 0 {
 			return b, errors.New(string(b))
+		}
+	}
+	if _, ok := HasVersion(options...); ok {
+		for _, val := range m {
+			if view, ok := val.(map[string]interface{}); ok {
+				for k, _ := range view {
+					if k == "Error" {
+						return b, errors.New(string(b))
+					}
+				}
+			}
 		}
 	}
 	return b, nil
