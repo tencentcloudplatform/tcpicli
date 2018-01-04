@@ -25,7 +25,7 @@ func main() {
 	bandwidthType := "bandwidthType=PayByTraffic"
 	bandwidth := "bandwidth=100"
 	instanceName := "InstanceName=ccsgenapicvm"
-	// keyId := "echo skey-impvf5cj"
+	keyId := "keyId=skey-iq43g8r7" // default autogen key
 	clusterCIDR := "clusterCIDR=172.16.0.0/16"
 	isVpcGateway := "isVpcGateway=0"
 	zoneId := "zoneId=100002"
@@ -42,6 +42,8 @@ func main() {
 	rootSize := "rootSize=50"
 	goodsNum := "goodsNum=1"
 	nodeDeleteMode := "nodeDeleteMode=Return"
+	replicas := "replicas=1"
+	replicasMod := "scaleTo=2"
 
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
@@ -54,14 +56,16 @@ func main() {
 			`DO tcpicli vpc CreateSubnet vpcId=$vpcId ` + region + " " + subnetCidr + " " + subnetName + " " + subnetZone,
 			`SET subnetId=tcpicli -f "{{range .Data}}{{.UnSubnetID}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
 			`DO echo $subnetId`,
-			`SET placementZone=tcpicli -f "{{range .Data}}{{.UnSubnetID}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
+			`SET placementZone=tcpicli -f "{{with index .Data 0}}{{.Zone}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
 			`DO echo $placementZone`,
 			"CreateCluster",
-			`DO sleep 5`,
+			`DO sleep 240`,
 			`SET clusterId=tcpicli -f "{{range .Data.Clusters}}{{.ClusterID}}{{end}}" ccs DescribeCluster ` + clusterName + " " + region,
-			`DO tcpicli cvm RunInstances Placement.Zone=$placementZone VirtualPrivateCloud.VpcId=$vpcId VirtualPrivateCloud.SubnetId=$subnetId InstanceChargeType=POSTPAID_BY_HOUR InstanceType=S2.SMALL1 SystemDisk.DiskType=CLOUD_BASIC SystemDisk.DiskSize=50 ` + region + " " + version + " " + instanceName + " ",
+			`DO echo $clusterId`,
+			`DO tcpicli cvm RunInstances ImageId=$imageId Placement.Zone=$placementZone VirtualPrivateCloud.VpcId=$vpcId VirtualPrivateCloud.SubnetId=$subnetId InstanceChargeType=POSTPAID_BY_HOUR InstanceType=S2.SMALL1 SystemDisk.DiskType=CLOUD_BASIC SystemDisk.DiskSize=50 ` + region + " " + version + " " + instanceName + " ",
 			`DO sleep 20`,
 			`SET existingCvmId=tcpicli -f '{{range .Response.InstanceSet}}{{if eq .InstanceName "ccsgenapicvm"}}{{.InstanceID}}{{end}}{{end}}' cvm DescribeInstances ` + region,
+			`DO echo $existingCvmId`,
 			"AddClusterInstancesFromExistedCvm",
 			`DO sleep 5`,
 			"AddClusterInstances",
@@ -129,9 +133,9 @@ func main() {
 			},
 			"AddClusterInstancesFromExistedCvm": []string{"457/9458",
 				region,
+				keyId,
 				"clusterId=$clusterId",
 				"instanceIds.0=$existingCvmId",
-				"keyId=$keyId",
 			},
 			"DescribeCluster": []string{"457/9448"},
 			"DescribeClusterInstances": []string{"457/9449",
@@ -144,7 +148,10 @@ func main() {
 				"clusterId=$clusterId",
 				"instanceIds.0=ins-mpomofr6",
 			},
-			"DeleteCluster": []string{"457/9445"},
+			"DeleteCluster": []string{"457/9445",
+				region,
+				"clusterId=$clusterId",
+			},
 			"CreateClusterService": []string{"457/9436",
 				region,
 				serviceName,
@@ -152,9 +159,9 @@ func main() {
 				containerPort,
 				lbPort,
 				serviceProto,
+				replicas,
 				"clusterId=$clusterId",
 				"containers.0.containerName=$serviceName",
-				"replicas=$replicasMod",
 			},
 			"DescribeClusterService": []string{"457/9440",
 				region,
@@ -173,8 +180,8 @@ func main() {
 				containerPort,
 				lbPort,
 				serviceProto,
-				"replicas=$replicasMod",
-				"containers.0.containerName=$serviceName",
+				replicas,
+				"containers.0.containerName=nginx",
 				"clusterId=$clusterId",
 				"strategy=RollingUpdate",
 				"minReadySeconds=10",
@@ -213,8 +220,8 @@ func main() {
 			"ModifyServiceReplicas": []string{"457/9431",
 				region,
 				serviceName,
+				replicasMod,
 				"clusterId=$clusterId",
-				"scaleTo=$replicasMod",
 			},
 			"DeleteInstances": []string{"457/9432",
 				region,
