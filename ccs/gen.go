@@ -34,6 +34,7 @@ func main() {
 	osName := "osName=centos7.2x86_64"
 	nginxImage := "containers.0.image=nginx:latest"
 	containerPort := "portMappings.0.containerPort=80"
+	containerName := "containers.0.containerName=ccsgenapicontainer"
 	lbPort := "portMappings.0.lbPort=80"
 	serviceProto := "portMappings.0.protocol=TCP"
 	cpu := "cpu=2"
@@ -96,6 +97,7 @@ func main() {
 			`DO sleep 10`,
 			"DeleteClusterInstances",
 			"DeleteCluster",
+			`DO tcpicli cvm TerminateInstances Version=2017-12-03 instanceIds.0=$existingCvmId ` + region,
 			`DO tcpicli vpc DeleteSubnet vpcId=$vpcId subnetId=$subnetId ` + region,
 			`DO tcpicli vpc DeleteVpc vpcId=$vpcId ` + region,
 		},
@@ -146,7 +148,7 @@ func main() {
 				region,
 				nodeDeleteMode,
 				"clusterId=$clusterId",
-				"instanceIds.0=ins-mpomofr6",
+				"instanceIds.0=$existingCvmId",
 			},
 			"DeleteCluster": []string{"457/9445",
 				region,
@@ -160,8 +162,8 @@ func main() {
 				lbPort,
 				serviceProto,
 				replicas,
+				containerName,
 				"clusterId=$clusterId",
-				"containers.0.containerName=$serviceName",
 			},
 			"DescribeClusterService": []string{"457/9440",
 				region,
