@@ -34,7 +34,7 @@ func main() {
 		Seq: []string{
 			"DescribeSecurityGroupEx",
 			"CreateSecurityGroup",
-			`SET sgId=tcpicli -f "{{range .Data.Detail}}{{.SgID}}{{end}}" dfw DescribeSecurityGroupEx ` + region + " " + sgName,
+			`SET sgId=tcpicli -f '{{range .Data.Detail}}{{if eq .SgName "tcpiclisg"}}{{.SgID}}{{end}}{{end}}' dfw DescribeSecurityGroupEx ` + region,
 			`DO echo $sgId`,
 			"ModifySecurityGroupAttributes",
 			"DescribeSecurityGroupPolicys",
