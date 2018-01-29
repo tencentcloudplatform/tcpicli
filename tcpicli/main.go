@@ -95,6 +95,11 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 			Subcommands: funcLb,
 		},
 		{
+			Name:        "ckafka",
+			Usage:       "Cloud Kafka",
+			Subcommands: funcCkafka,
+		},
+		{
 			Name:        "vod",
 			Usage:       "Video on Demand",
 			Subcommands: funcVod,
