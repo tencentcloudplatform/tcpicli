@@ -61,6 +61,24 @@ var (
 			Action:      CkafkaListTopic,
 			Description: "Referrer: https://cloud.tencent.com/document/api/597/10101",
 		},
+		{
+			Name:        "SetInstanceAttributes",
+			Usage:       "Change message retention time",
+			Action:      CkafkaSetInstanceAttributes,
+			Description: "Referrer: https://cloud.tencent.com/document/api/597/10095",
+		},
+		{
+			Name:        "AddTopicIpWhitelist",
+			Usage:       "Allow IP whitelist to subscribe to topic",
+			Action:      CkafkaAddTopicIpWhitelist,
+			Description: "Referrer: https://cloud.tencent.com/document/api/597/10103",
+		},
+		{
+			Name:        "DeleteTopicIpWhitelist",
+			Usage:       "Allow IP whitelist to subscribe to topic",
+			Action:      CkafkaDeleteTopicIpWhitelist,
+			Description: "Referrer: https://cloud.tencent.com/document/api/597/10104",
+		},
 	}
 )
 
@@ -158,6 +176,42 @@ func CkafkaSetTopicAttributes(c *cli.Context) error {
 }
 func CkafkaAddPartition(c *cli.Context) error {
 	resp, err := ckafka.AddPartition(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CkafkaSetInstanceAttributes(c *cli.Context) error {
+	resp, err := ckafka.SetInstanceAttributes(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CkafkaAddTopicIpWhitelist(c *cli.Context) error {
+	resp, err := ckafka.AddTopicIpWhitelist(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CkafkaDeleteTopicIpWhitelist(c *cli.Context) error {
+	resp, err := ckafka.DeleteTopicIpWhitelist(c.Args()...)
 	if err != nil {
 		return err
 	}
