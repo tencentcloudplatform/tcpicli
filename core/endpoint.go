@@ -15,4 +15,5 @@ var Endpoint = map[string]string{
 	"lb":      "lb.api.qcloud.com/v2/index.php",
 	"vod":     "vod.api.qcloud.com/v2/index.php",
 	"ckafka":  "ckafka.api.qcloud.com/v2/index.php",
+	"trade":   "trade.api.qcloud.com/v2/index.php",
 }
