@@ -31,12 +31,6 @@ var (
 			Action:      TradeDescribeAccountBalance,
 			Description: "Referrer: https://cloud.tencent.com/document/api/378/4397",
 		},
-		{
-			Name:        "PayDeals",
-			Usage:       "Pays deals",
-			Action:      TradePayDeals,
-			Description: "Referrer: https://cloud.tencent.com/document/api/378/4394",
-		},
 	}
 )
 
@@ -75,18 +69,6 @@ func TradeDescribeDealsByCond(c *cli.Context) error {
 }
 func TradeDescribeAccountBalance(c *cli.Context) error {
 	resp, err := trade.DescribeAccountBalance(c.Args()...)
-	if err != nil {
-		return err
-	}
-	r, err := resp.String(formatOut)
-	if err != nil {
-		return err
-	}
-	fmt.Println(r)
-	return nil
-}
-func TradePayDeals(c *cli.Context) error {
-	resp, err := trade.PayDeals(c.Args()...)
 	if err != nil {
 		return err
 	}
