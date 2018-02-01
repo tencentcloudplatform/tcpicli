@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/tencentcloudplatform/tcpicli/core"
 	"io/ioutil"
+	"regexp"
 )
 
 //go:generate go run gen.go
@@ -45,6 +46,24 @@ func doAction(endpoint string, action string, options ...string) ([]byte, error)
 	return b, nil
 }
 
+func queryType(action string) string {
+	queueRe := regexp.MustCompile("(?i)(queue)")
+	queueAction := queueRe.MatchString(action)
+	topicRe := regexp.MustCompile("(?i)(topic)")
+	topicAction := topicRe.MatchString(action)
+	if queueAction == true {
+		requestType := "queue"
+		return requestType
+	} else if topicAction == true {
+		requestType := "topic"
+		return requestType
+	} else {
+		requestType := ""
+		return requestType
+	}
+	return ""
+}
+
 func DoAction(action string, options ...string) ([]byte, error) {
 	region, ok := core.HasRegion(options...)
 	if !ok {
@@ -55,6 +74,7 @@ func DoAction(action string, options ...string) ([]byte, error) {
 	if !core.Internal() {
 		name = "qcloud"
 	}
-	requesturl := fmt.Sprintf("cmq-queue-%s.api.%s.com/v2/index.php", region, name)
+	requestType := queryType(action)
+	requesturl := fmt.Sprintf("cmq-%s-%s.api.%s.com/v2/index.php", requestType, region, name)
 	return doAction(requesturl, action, options...)
 }
