@@ -47,21 +47,16 @@ func doAction(endpoint string, action string, options ...string) ([]byte, error)
 }
 
 func queryType(action string) string {
-	queueRe := regexp.MustCompile("(?i)(queue)")
-	queueAction := queueRe.MatchString(action)
-	topicRe := regexp.MustCompile("(?i)(topic|subsc|publish)")
-	topicAction := topicRe.MatchString(action)
-	if queueAction == true {
-		requestType := "queue"
-		return requestType
-	} else if topicAction == true {
-		requestType := "topic"
-		return requestType
-	} else {
-		requestType := ""
-		return requestType
+	requestType := ""
+	queueRe := regexp.MustCompile("(?i)(queue|(send|receive|delete)message|batch.*message)")
+	if queueAction := queueRe.MatchString(action); queueAction {
+		requestType = "queue"
 	}
-	return ""
+	topicRe := regexp.MustCompile("(?i)(topic|subsc|publish)")
+	if topicAction := topicRe.MatchString(action); topicAction {
+		requestType = "topic"
+	}
+	return requestType
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {
@@ -75,6 +70,6 @@ func DoAction(action string, options ...string) ([]byte, error) {
 		name = "qcloud"
 	}
 	requestType := queryType(action)
-	requesturl := fmt.Sprintf("cmq-%s-%s.api.%s.com/v2/index.php", requestType, region, name)
-	return doAction(requesturl, action, options...)
+	requestUrl := fmt.Sprintf("cmq-%s-%s.api.%s.com/v2/index.php", requestType, region, name)
+	return doAction(requestUrl, action, options...)
 }
