@@ -49,7 +49,7 @@ func doAction(endpoint string, action string, options ...string) ([]byte, error)
 func queryType(action string) string {
 	queueRe := regexp.MustCompile("(?i)(queue)")
 	queueAction := queueRe.MatchString(action)
-	topicRe := regexp.MustCompile("(?i)(topic)")
+	topicRe := regexp.MustCompile("(?i)(topic|subsc|publish)")
 	topicAction := topicRe.MatchString(action)
 	if queueAction == true {
 		requestType := "queue"
