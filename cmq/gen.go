@@ -4,9 +4,7 @@ package main
 
 import (
 	. "."
-	"fmt"
 	"github.com/tencentcloudplatform/tcpicli/autogen"
-	"time"
 )
 
 type Pkg struct{}
@@ -16,18 +14,59 @@ func (p *Pkg) DoAction(action string, query ...string) ([]byte, error) {
 }
 
 func main() {
-	queryName := fmt.Sprintf("query%d", time.Now().Unix())
+	region := "Region=gz"
+	queueName := "queueName=tcpicligen"
+
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
 		Seq: []string{
 			"CreateQueue",
 			"ListQueue",
+			"GetQueueAttributes",
+			"SetQueueAttributes",
+			"SendMessage",
+			`DO sleep 3`,
+			"ReceiveMessage",
+			`SET receiptHandle=tcpicli -f "{{.ReceiptHandle}} cmq ReceiveMessage "` + region + " " + queueName,
+			`DO echo $receiptHandle`,
+			"DeleteMessage",
 			"DeleteQueue",
 		},
 		FuncMap: map[string][]string{
-			"CreateQueue": []string{"431/5832", "queueName=" + queryName},
-			"ListQueue":   []string{"406/5833"},
-			"DeleteQueue": []string{"406/5836", "queueName=" + queryName},
+			"CreateQueue": []string{"406/5832",
+				region,
+				queueName,
+			},
+			"ListQueue": []string{"406/5833",
+				region,
+			},
+			"GetQueueAttributes": []string{"406/5834",
+				region,
+				queueName,
+			},
+			"SetQueueAttributes": []string{"406/5835",
+				region,
+				queueName,
+				"pollingWaitSeconds=5", // used to arbitrarily change queue attributes for function gen
+			},
+			"SendMessage": []string{"406/5837",
+				region,
+				queueName,
+				"msgBody=tcpicli gen test",
+			},
+			"ReceiveMessage": []string{"406/5839",
+				region,
+				queueName,
+			},
+			"DeleteMessage": []string{"406/5840",
+				region,
+				queueName,
+				"receiptHandle=$receiptHandle",
+			},
+			"DeleteQueue": []string{"406/5836",
+				region,
+				queueName,
+			},
 		},
 		PkgName: "cmq",
 		Pkg:     new(Pkg),
