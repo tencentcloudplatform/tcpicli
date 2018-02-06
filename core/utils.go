@@ -47,11 +47,8 @@ func HasVersion(options ...string) (string, bool) {
 	return "", false
 }
 
-// used to determine cmq endpoint
 func CmqEndPoint(action string, options ...string) string {
-	queryType := ""
-	name := ""
-	region := ""
+	var queryType, name, region string
 	queueRe := regexp.MustCompile("(?i)((send|receive|delete)message|batch.*message|queue)")
 	if queueAction := queueRe.MatchString(action); queueAction {
 		queryType = "queue"

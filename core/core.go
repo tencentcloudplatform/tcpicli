@@ -16,59 +16,17 @@ func DoAction(service, action string, options ...string) ([]byte, error) {
 }
 
 func (client *Client) DoAction(service, action string, options ...string) ([]byte, error) {
-	// 	client := NewClient(Endpoint[service], true)
-	method := "POST"
-	requesturl := Endpoint[service]
-
-	params := make(map[string]interface{})
-	params["Action"] = action
-	AssignParams(params, options...)
-
-	resp, err := client.SendRequest(method, requesturl, params)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	m := make(map[string]interface{})
-	err = json.Unmarshal(b, &m)
-	if err != nil {
-		return nil, err
-	}
-	b, err = json.MarshalIndent(m, "", "  ")
-	if err != nil {
-		return nil, err
-	}
-	if val, ok := m["code"]; ok {
-		if val.(float64) != 0 {
-			return b, errors.New(string(b))
-		}
-	}
-	if _, ok := HasVersion(options...); ok {
-		for _, val := range m {
-			if view, ok := val.(map[string]interface{}); ok {
-				for k, _ := range view {
-					if k == "Error" {
-						return b, errors.New(string(b))
-					}
-				}
-			}
-		}
-	}
-	return b, nil
-}
-
-func (client *Client) CmqDoAction(service, action string, options ...string) ([]byte, error) {
 	method := "POST"
 	params := make(map[string]interface{})
 	params["Action"] = action
 	AssignParams(params, options...)
-	requesturl := CmqEndPoint(action, options...)
+	var requesturl string
 
+	if service == "cmq" {
+		requesturl = CmqEndPoint(action, options...)
+	} else {
+		requesturl = Endpoint[service]
+	}
 	resp, err := client.SendRequest(method, requesturl, params)
 	if err != nil {
 		return nil, err

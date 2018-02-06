@@ -38,7 +38,7 @@ var (
 )
 
 func CmqDoAction(c *cli.Context) error {
-	resp, err := cmq.CmqDoAction(c.Args().First(), c.Args().Tail()...)
+	resp, err := cmq.DoAction(c.Args().First(), c.Args().Tail()...)
 	if err != nil {
 		return err
 	}
