@@ -2,6 +2,7 @@ package core
 
 import ()
 
+// cmq endpoint def lives in tcpicli/core/utils.go
 var Endpoint = map[string]string{
 	"vpc":     "vpc.api.qcloud.com/v2/index.php",
 	"cdn":     "cdn.api.qcloud.com/v2/index.php",

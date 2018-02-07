@@ -1,7 +1,9 @@
 package core
 
 import (
+	"fmt"
 	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -43,4 +45,29 @@ func HasVersion(options ...string) (string, bool) {
 		}
 	}
 	return "", false
+}
+
+func CmqEndPoint(action string, options ...string) string {
+	var queryType, name, region string
+	queueRe := regexp.MustCompile("(?i)((send|receive|delete)message|batch.*message|queue)")
+	if queueAction := queueRe.MatchString(action); queueAction {
+		queryType = "queue"
+	}
+	topicRe := regexp.MustCompile("(?i)(topic|subsc|publish)")
+	if topicAction := topicRe.MatchString(action); topicAction {
+		queryType = "topic"
+	}
+	if Internal() {
+		name = "tencentyun"
+	} else if !Internal() {
+		name = "qcloud"
+	}
+
+	for _, v := range options {
+		v = strings.ToLower(v)
+		if strings.HasPrefix(v, "region=") {
+			region = strings.Split(v, "=")[1]
+		}
+	}
+	return fmt.Sprintf("cmq-%s-%s.api.%s.com/v2/index.php", queryType, region, name)
 }
