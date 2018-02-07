@@ -47,16 +47,52 @@ var (
 			Description: "referer https://cloud.tencent.com/document/api/406/5835",
 		},
 		{
+			Name:        "BatchSendMessage",
+			Usage:       "sends a batch of messages to an existing queue",
+			Action:      CmqBatchSendMessage,
+			Description: "referer https://cloud.tencent.com/document/api/406/5838",
+		},
+		{
 			Name:        "ReceiveMessage",
 			Usage:       "Receives a message in specified message queue",
 			Action:      CmqReceiveMessage,
 			Description: "referer https://cloud.tencent.com/document/api/406/5839",
 		},
 		{
+			Name:        "BatchReceiveMessage",
+			Usage:       "Receives a batch of messages in specified message queue",
+			Action:      CmqBatchReceiveMessage,
+			Description: "referer https://cloud.tencent.com/document/api/406/5924",
+		},
+		{
+			Name:        "BatchDeleteMessage",
+			Usage:       "Deletes a batch of messages from specified message queue",
+			Action:      CmqBatchDeleteMessage,
+			Description: "referer https://cloud.tencent.com/document/api/406/5841",
+		},
+		{
 			Name:        "DeleteQueue",
 			Usage:       "Deletes specified message queue",
 			Action:      CmqDeleteQueue,
 			Description: "referer https://cloud.tencent.com/document/api/406/5836",
+		},
+		{
+			Name:        "CreateTopic",
+			Usage:       "Creates topic in specified region",
+			Action:      CmqCreateTopic,
+			Description: "referer https://cloud.tencent.com/document/api/406/7405",
+		},
+		{
+			Name:        "ListTopic",
+			Usage:       "Lists topics in specified region",
+			Action:      CmqListTopic,
+			Description: "referer https://cloud.tencent.com/document/api/406/7404",
+		},
+		{
+			Name:        "DeleteTopic",
+			Usage:       "Deletes specified topic",
+			Action:      CmqDeleteTopic,
+			Description: "referer https://cloud.tencent.com/document/api/406/7409",
 		},
 	}
 )
@@ -129,6 +165,18 @@ func CmqSendMessage(c *cli.Context) error {
 	fmt.Println(r)
 	return nil
 }
+func CmqBatchSendMessage(c *cli.Context) error {
+	resp, err := cmq.BatchSendMessage(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
 func CmqReceiveMessage(c *cli.Context) error {
 	resp, err := cmq.ReceiveMessage(c.Args()...)
 	if err != nil {
@@ -141,8 +189,68 @@ func CmqReceiveMessage(c *cli.Context) error {
 	fmt.Println(r)
 	return nil
 }
+func CmqBatchReceiveMessage(c *cli.Context) error {
+	resp, err := cmq.BatchReceiveMessage(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CmqBatchDeleteMessage(c *cli.Context) error {
+	resp, err := cmq.BatchDeleteMessage(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
 func CmqDeleteQueue(c *cli.Context) error {
 	resp, err := cmq.DeleteQueue(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CmqCreateTopic(c *cli.Context) error {
+	resp, err := cmq.CreateTopic(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CmqListTopic(c *cli.Context) error {
+	resp, err := cmq.ListTopic(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+func CmqDeleteTopic(c *cli.Context) error {
+	resp, err := cmq.DeleteTopic(c.Args()...)
 	if err != nil {
 		return err
 	}
