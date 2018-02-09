@@ -5,13 +5,13 @@ import (
 )
 
 type CvmClient struct {
-	core.Client
+	*core.Client
 }
 
-var DefaultClient = CvmClient{Client: *core.NewClient()}
+var DefaultClient = CvmClient{Client: core.DefaultClient}
 
 func NewClient() *CvmClient {
-	return &CvmClient{Client: *core.NewClient()}
+	return &CvmClient{Client: core.DefaultClient}
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {

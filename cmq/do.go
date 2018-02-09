@@ -5,13 +5,13 @@ import (
 )
 
 type CmqClient struct {
-	core.Client
+	*core.Client
 }
 
-var DefaultClient = CmqClient{Client: *core.NewClient()}
+var DefaultClient = CmqClient{Client: core.DefaultClient}
 
 func NewClient() *CmqClient {
-	return &CmqClient{Client: *core.NewClient()}
+	return &CmqClient{Client: core.DefaultClient}
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {

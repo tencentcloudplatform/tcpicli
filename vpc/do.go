@@ -5,13 +5,13 @@ import (
 )
 
 type VpcClient struct {
-	core.Client
+	*core.Client
 }
 
-var DefaultClient = VpcClient{Client: *core.NewClient()}
+var DefaultClient = VpcClient{Client: core.DefaultClient}
 
 func NewClient() *VpcClient {
-	return &VpcClient{Client: *core.NewClient()}
+	return &VpcClient{Client: core.DefaultClient}
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {

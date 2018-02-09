@@ -5,13 +5,13 @@ import (
 )
 
 type TradeClient struct {
-	core.Client
+	*core.Client
 }
 
-var DefaultClient = TradeClient{Client: *core.NewClient()}
+var DefaultClient = TradeClient{Client: core.DefaultClient}
 
 func NewClient() *TradeClient {
-	return &TradeClient{Client: *core.NewClient()}
+	return &TradeClient{Client: core.DefaultClient}
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {
