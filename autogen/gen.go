@@ -104,7 +104,7 @@ func main() {
 			continue
 		}
 		str := fmt.Sprintf("%sResp", action)
-		res, err := gojson.Generate(bytes.NewBuffer(b), gojson.ParseJson, str, g.PkgName, []string{"json"}, false)
+		res, err := gojson.Generate(bytes.NewBuffer(b), gojson.ParseJson, str, g.PkgName, []string{"json"}, false, false)
 		if err != nil {
 			log.Println(action, err.Error())
 			continue
