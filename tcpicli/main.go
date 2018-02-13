@@ -105,6 +105,11 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 			Subcommands: funcTrade,
 		},
 		{
+			Name:        "feecenter",
+			Usage:       "Tencent Cloud Resource Billing information related",
+			Subcommands: funcFeecenter,
+		},
+		{
 			Name:        "vod",
 			Usage:       "Video on Demand",
 			Subcommands: funcVod,
