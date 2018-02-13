@@ -5,13 +5,13 @@ import (
 )
 
 type CcsClient struct {
-	core.Client
+	*core.Client
 }
 
-var DefaultClient = CcsClient{Client: *core.NewClient()}
+var DefaultClient = CcsClient{Client: core.DefaultClient}
 
 func NewClient() *CcsClient {
-	return &CcsClient{Client: *core.NewClient()}
+	return &CcsClient{Client: core.DefaultClient}
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {

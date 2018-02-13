@@ -5,13 +5,13 @@ import (
 )
 
 type EipClient struct {
-	core.Client
+	*core.Client
 }
 
-var DefaultClient = EipClient{Client: *core.NewClient()}
+var DefaultClient = EipClient{Client: core.DefaultClient}
 
 func NewClient() *EipClient {
-	return &EipClient{Client: *core.NewClient()}
+	return &EipClient{Client: core.DefaultClient}
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {

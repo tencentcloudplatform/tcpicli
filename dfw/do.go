@@ -5,13 +5,13 @@ import (
 )
 
 type DfwClient struct {
-	core.Client
+	*core.Client
 }
 
-var DefaultClient = DfwClient{Client: *core.NewClient()}
+var DefaultClient = DfwClient{Client: core.DefaultClient}
 
 func NewClient() *DfwClient {
-	return &DfwClient{Client: *core.NewClient()}
+	return &DfwClient{Client: core.DefaultClient}
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {

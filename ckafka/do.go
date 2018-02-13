@@ -5,13 +5,13 @@ import (
 )
 
 type CkafkaClient struct {
-	core.Client
+	*core.Client
 }
 
-var DefaultClient = CkafkaClient{Client: *core.NewClient()}
+var DefaultClient = CkafkaClient{Client: core.DefaultClient}
 
 func NewClient() *CkafkaClient {
-	return &CkafkaClient{Client: *core.NewClient()}
+	return &CkafkaClient{Client: core.DefaultClient}
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {

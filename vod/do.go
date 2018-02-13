@@ -5,13 +5,13 @@ import (
 )
 
 type VodClient struct {
-	core.Client
+	*core.Client
 }
 
-var DefaultClient = VodClient{Client: *core.NewClient()}
+var DefaultClient = VodClient{Client: core.DefaultClient}
 
 func NewClient() *VodClient {
-	return &VodClient{Client: *core.NewClient()}
+	return &VodClient{Client: core.DefaultClient}
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {
