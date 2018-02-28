@@ -95,6 +95,21 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 			Subcommands: funcLb,
 		},
 		{
+			Name:        "ckafka",
+			Usage:       "Cloud Kafka",
+			Subcommands: funcCkafka,
+		},
+		{
+			Name:        "trade",
+			Usage:       "Tencent Cloud Billing information related",
+			Subcommands: funcTrade,
+		},
+		{
+			Name:        "feecenter",
+			Usage:       "Tencent Cloud Resource Billing information related",
+			Subcommands: funcFeecenter,
+		},
+		{
 			Name:        "vod",
 			Usage:       "Video on Demand",
 			Subcommands: funcVod,
@@ -116,13 +131,6 @@ tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 func before(c *cli.Context) error {
 	formatFlag := c.String("f")
 	formatOut = formatFlag
-
-	/*
-		if len(formatFlag) > 0 {
-			core.Inspect(formatFlag, c.Args()[0], c.Args()[1], c.Args()[2:]...)
-			os.Exit(0)
-		}
-	*/
 	if c.Bool("vv") {
 		core.DefaultClient.SetLog(os.Stderr, "[core] ", log.LstdFlags|log.Lshortfile)
 	}

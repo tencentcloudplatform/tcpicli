@@ -14,12 +14,11 @@ func (p *Pkg) DoAction(action string, query ...string) ([]byte, error) {
 }
 
 func main() {
-	vpcName := "vpcName=tcpicligen" // VPC to create everything in
-	// vpcCidrBlock := "cidrBlock=10.0.0.0/16"                // VPC cidr
-	// subnetCidrBlock := "subnetSet.0.cidrBlock=10.0.0.0/24" // Subnet cidr
-	// subnetName := "subnetSet.0.subnetName=tcpicligensub"   // Subnet Name
-	// zoneId := "subnetSet.0.zoneId=800002"                  // ap-beijing-2
-	// vagueInstanceName := "VagueInstanceName=tcpiclilbgen" // RegisterInstancesWithLoadBalancer
+	vpcName := "vpcName=tcpicligen"                        // VPC to create everything in
+	vpcCidrBlock := "cidrBlock=10.0.0.0/16"                // VPC cidr
+	subnetCidrBlock := "subnetSet.0.cidrBlock=10.0.0.0/24" // Subnet cidr
+	subnetName := "subnetSet.0.subnetName=tcpicligensub"   // Subnet Name
+	zoneId := "subnetSet.0.zoneId=800002"                  // ap-beijing-2
 
 	region := "Region=bj"                                       // common
 	loadBalancerType := "loadBalancerType=3"                    // InquiryLBPrice / CreateLoadBalancer
@@ -35,42 +34,41 @@ func main() {
 	gen := &autogen.Gen{
 		DocRoot: "https://cloud.tencent.com/document/api/",
 		Seq: []string{
-			// -- set up vpc & subnet to gen everything --
-			// `DO tcpicli vpc CreateVpc ` + region + " " + vpcName + " " + vpcCidrBlock, // Set up gen VPC and capture the vpcID, etc
+			`DO tcpicli vpc CreateVpc ` + region + " " + vpcName + " " + vpcCidrBlock,
 			`SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx ` + region + " " + vpcName,
 			`DO echo $vpcId`,
-			// `DO tcpicli vpc CreateSubnet vpcId=$vpcId ` + region + " " + subnetCidrBlock + " " + subnetName + " " + zoneId,
+			`DO tcpicli vpc CreateSubnet vpcId=$vpcId ` + region + " " + subnetCidrBlock + " " + subnetName + " " + zoneId,
 			`SET subnetId=tcpicli -f "{{range .Data}}{{.UnSubnetID}}{{end}}" vpc DescribeSubnetEx vpcId=$vpcId ` + region,
 			`DO echo $subnetId`,
 
-			// "InquiryLBPrice",
-			// "CreateLoadBalancer",
-			// "DescribeLoadBalancers",
-			`SET loadBalancerId=tcpicli -f "{{range .LoadBalancerSet}}{{.LoadBalancerID}}{{end}}" lb DescribeLoadBalancers ` + region + " " + loadBalancerNameMod,
+			"InquiryLBPrice",
+			"CreateLoadBalancer",
+			"DescribeLoadBalancers",
+			`SET loadBalancerId=tcpicli -f '{{range .LoadBalancerSet}}{{if eq .LoadBalancerName "tcpicligen"}}{{.LoadBalancerID}}{{end}}{{end}}' lb DescribeLoadBalancers ` + region,
 			`DO echo $loadBalancerId`,
-			// "ModifyLoadBalancerAttributes",
-			// "CreateLoadBalancerListeners",
-			// `DO sleep 5`,
+			"ModifyLoadBalancerAttributes",
+			"CreateLoadBalancerListeners",
+			`DO sleep 5`,
 			"DescribeLoadBalancerListeners",
 			`SET listenerId=tcpicli -f '{{range .ListenerSet}}{{.ListenerID}}{{end}}' lb DescribeLoadBalancerListeners ` + region + " loadBalancerId=$loadBalancerId",
 			`DO echo $listenerId`,
-			// "ModifyLoadBalancerListener",
-			// `DO sleep 5`,
+			"ModifyLoadBalancerListener",
+			`DO sleep 5`,
 			`SET instanceId=tcpicli -f '{{range .Response.InstanceSet}}{{if eq .InstanceName "tcpiclilbgen"}}{{.InstanceID}}{{end}}{{end}}' cvm DescribeInstances ` + region,
 			`DO echo $instanceId`,
 			"RegisterInstancesWithLoadBalancer",
 			"DescribeLoadBalancerBackends",
 			"ModifyLoadBalancerBackends",
 			"DescribeLBHealthStatus",
-			// "DeregisterInstancesFromLoadBalancer",
+			"DeregisterInstancesFromLoadBalancer",
 
 			// -- Clean --
-			// "DeleteLoadBalancerListeners",
-			// `DO sleep 5`,
-			// "DeleteLoadBalancers",
-			// `DO sleep 5`,
-			// `DO tcpicli vpc DeleteSubnet vpcId=$vpcId subnetId=$subnetId ` + region,
-			// `DO tcpicli vpc DeleteVpc vpcId=$vpcId ` + region,
+			"DeleteLoadBalancerListeners",
+			`DO sleep 5`,
+			"DeleteLoadBalancers",
+			`DO sleep 5`,
+			`DO tcpicli vpc DeleteSubnet vpcId=$vpcId subnetId=$subnetId ` + region,
+			`DO tcpicli vpc DeleteVpc vpcId=$vpcId ` + region,
 		},
 		FuncMap: map[string][]string{
 			"InquiryLBPrice": []string{"214/1328",
