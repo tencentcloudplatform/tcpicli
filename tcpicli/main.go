@@ -19,7 +19,7 @@ func init() {
 func main() {
 	app := cli.NewApp()
 	app.Name = "tcpicli"
-	app.Usage = "tencent cloud platform cli tool"
+	app.Usage = "tencent cloud platform command-line interface tool"
 	app.EnableBashCompletion = true
 	app.Version = VER + "." + buildtime
 	app.Flags = []cli.Flag{
