@@ -43,8 +43,8 @@ func main() {
 			Usage:  "do <service> <action> <args1=value1> [args2=value2] ...",
 			Action: do,
 			Description: `do ANY action and output json response
-Example:
-tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
+    Example:
+    tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 		},
 		{
 			Name:        "vpc",
