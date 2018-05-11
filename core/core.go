@@ -16,14 +16,17 @@ func DoAction(service, action string, options ...string) ([]byte, error) {
 }
 
 func (client *Client) DoAction(service, action string, options ...string) ([]byte, error) {
-	// 	client := NewClient(Endpoint[service], true)
 	method := "POST"
-	requesturl := Endpoint[service]
-
 	params := make(map[string]interface{})
 	params["Action"] = action
 	AssignParams(params, options...)
+	var requesturl string
 
+	if service == "cmq" {
+		requesturl = CmqEndPoint(action, options...)
+	} else {
+		requesturl = Endpoint[service]
+	}
 	resp, err := client.SendRequest(method, requesturl, params)
 	if err != nil {
 		return nil, err

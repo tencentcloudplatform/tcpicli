@@ -5,13 +5,13 @@ import (
 )
 
 type ImgClient struct {
-	core.Client
+	*core.Client
 }
 
-var DefaultClient = ImgClient{Client: *core.NewClient()}
+var DefaultClient = ImgClient{Client: core.DefaultClient}
 
 func NewClient() *ImgClient {
-	return &ImgClient{Client: *core.NewClient()}
+	return &ImgClient{Client: core.DefaultClient}
 }
 
 func DoAction(action string, options ...string) ([]byte, error) {
