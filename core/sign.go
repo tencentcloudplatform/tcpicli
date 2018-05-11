@@ -13,6 +13,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -38,7 +39,12 @@ import (
 type Client struct {
 	httpClient *http.Client
 	lg         *log.Logger
+	userAgent  string
 }
+
+var (
+	defUserAgent = "tcpicli" + VERSION + "/" + runtime.Version()
+)
 
 var DefaultClient *Client
 
@@ -55,13 +61,20 @@ func NewClient() *Client {
 			Transport: tr,
 			Timeout:   time.Duration(30) * time.Second,
 		},
-		lg: log.New(ioutil.Discard, "", log.LstdFlags),
+		lg:        log.New(ioutil.Discard, "", log.LstdFlags),
+		userAgent: defUserAgent,
 	}
 	return c
 }
 
 func (c *Client) SetLog(out io.Writer, prefix string, flag int) {
 	c.lg = log.New(out, prefix, flag)
+}
+func (c *Client) SetUserAgent(ua string) {
+	c.userAgent = ua
+}
+func (c *Client) AppendUserAgent(ua string) {
+	c.userAgent = c.userAgent + " " + strings.TrimLeft(ua, " ")
 }
 
 func (c *Client) signature(method, requesturl string, params map[string]interface{}) map[string]interface{} {
