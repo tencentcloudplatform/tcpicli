@@ -19,7 +19,7 @@ func init() {
 func main() {
 	app := cli.NewApp()
 	app.Name = "tcpicli"
-	app.Usage = "tencent cloud platform cli tool"
+	app.Usage = "tencent cloud platform command-line interface tool"
 	app.EnableBashCompletion = true
 	app.Version = VER + "." + buildtime
 	app.Flags = []cli.Flag{
@@ -43,8 +43,8 @@ func main() {
 			Usage:  "do <service> <action> <args1=value1> [args2=value2] ...",
 			Action: do,
 			Description: `do ANY action and output json response
-Example:
-tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
+    Example:
+    tcpicli do cdn GetHostInfoByHost hosts.0=www.test.com`,
 		},
 		{
 			Name:        "vpc",
