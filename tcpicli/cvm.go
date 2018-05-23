@@ -14,6 +14,18 @@ var (
 			Action: CvmDoAction,
 		},
 		{
+			Name:        "DescribeRegions",
+			Usage:       "Describe regions",
+			Action:      CvmDescribeRegions,
+			Description: "Referrer: https://cloud.tencent.com/document/api/13/15708",
+		},
+		{
+			Name:        "DescribeZones",
+			Usage:       "Describe zones",
+			Action:      CvmDescribeZones,
+			Description: "Referrer: https://cloud.tencent.com/document/api/213/15707",
+		},
+		{
 			Name:        "RunInstances",
 			Usage:       "Starts new instances",
 			Action:      CvmRunInstances,
@@ -186,6 +198,33 @@ func CvmDoAction(c *cli.Context) error {
 	fmt.Println(string(resp))
 	return nil
 }
+
+func CvmDescribeRegions(c *cli.Context) error {
+	resp, err := cvm.DescribeRegions(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+
+func CvmDescribeZones(c *cli.Context) error {
+	resp, err := cvm.DescribeZones(c.Args()...)
+	if err != nil {
+		return err
+	}
+	r, err := resp.String(formatOut)
+	if err != nil {
+		return err
+	}
+	fmt.Println(r)
+	return nil
+}
+
 func CvmRunInstances(c *cli.Context) error {
 	resp, err := cvm.RunInstances(c.Args()...)
 	if err != nil {

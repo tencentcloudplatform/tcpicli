@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/ChimeraCoder/gojson"
 	"github.com/tencentcloudplatform/tcpicli/core"
+	"go/format"
 	"io/ioutil"
 	"log"
 	"os"
@@ -201,26 +202,9 @@ func main() {
 }
 
 func gofmt(str string) string {
-	fname := "tmpfile.go"
-	err := ioutil.WriteFile(fname, []byte(str), 0644)
+	b, err := format.Source([]byte(str))
 	if err != nil {
-		log.Println(err.Error())
-		return ""
-	}
-	defer os.Remove(fname)
-	cmd := "go fmt " + fname
-	c := exec.Command("/bin/sh", "-c", cmd)
-	// 	c.Stderr = os.Stderr
-	// 	c.Stdout = os.Stdout
-	err = c.Run()
-	if err != nil {
-		log.Println(err.Error())
-		return ""
-	}
-	b, err := ioutil.ReadFile(fname)
-	if err != nil {
-		log.Println(err.Error())
-		return ""
+		panic(err)
 	}
 	return string(b)
 }

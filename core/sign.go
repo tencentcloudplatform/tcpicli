@@ -211,7 +211,12 @@ func (c *Client) httpGet(url string) (*http.Response, error) {
 	}
 
 	client := &http.Client{Transport: tr, Timeout: time.Duration(30) * time.Second}
-	return client.Get(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", c.userAgent)
+	return client.Do(req)
 }
 
 func (c *Client) httpPost(requesturl string, params map[string]interface{}) (*http.Response, error) {
@@ -220,6 +225,7 @@ func (c *Client) httpPost(requesturl string, params map[string]interface{}) (*ht
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+	req.Header.Set("User-Agent", c.userAgent)
 	c.lg.Println(req.URL.String(), ParamsToStr(params))
 	return c.httpClient.Do(req)
 }
