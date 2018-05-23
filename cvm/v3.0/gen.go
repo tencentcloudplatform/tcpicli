@@ -22,9 +22,13 @@ func main() {
 		DocRoot: "https://cloud.tencent.com/document/api/",
 		Seq: []string{
 			`DescribeImportImageOs`,
+			`DescribeImageQuota`,
+			`DescribeImages`,
 		},
 		FuncMap: map[string][]string{
 			"DescribeImportImageOs": []string{"213/15718"},
+			"DescribeImageQuota":    []string{"213/15719"},
+			"DescribeImages":        []string{"213/15715"},
 		},
 		PkgName: "cvm",
 		Pkg:     new(Pkg),

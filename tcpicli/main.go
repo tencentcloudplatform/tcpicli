@@ -65,6 +65,11 @@ func main() {
 			https://cloud.tencent.com/document/api/213/569`,
 		},
 		{
+			Name:        "cvm3.0",
+			Usage:       "cvm new api function",
+			Subcommands: funcCvm30,
+		},
+		{
 			Name:        "img",
 			Usage:       "img function",
 			Subcommands: funcImg,
