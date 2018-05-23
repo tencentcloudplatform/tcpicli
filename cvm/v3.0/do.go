@@ -29,5 +29,5 @@ func (client *CvmClient) DoAction(action string, options ...string) ([]byte, err
 		region = core.DefaultRegion()
 		options = append(options, "Region="+region)
 	}
-	return client.Client.DoAction("cvm", action, options...)
+	return client.Client.DoAction("cvm3.0", action, options...)
 }
