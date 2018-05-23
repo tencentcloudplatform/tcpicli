@@ -5,12 +5,16 @@ package main
 import (
 	. "."
 	"github.com/tencentcloudplatform/tcpicli/autogen"
+	"log"
+	"os"
 )
 
 type Pkg struct{}
 
 func (p *Pkg) DoAction(action string, query ...string) ([]byte, error) {
-	return DoAction(action, query...)
+	client := NewClient()
+	client.SetLog(os.Stderr, "[debug] ", log.LstdFlags|log.Lshortfile)
+	return client.DoAction(action, query...)
 }
 
 func main() {
@@ -57,7 +61,9 @@ func main() {
 			"ResetInstancesType":             {""},
 		},
 		Seq: []string{
-			// `DO tcpicli vpc CreateVpc ` + region + " " + vpcName + " " + cidrBlock,
+			`DescribeRegions`,
+			`DescribeZones`,
+			`DO tcpicli vpc CreateVpc ` + region + " " + vpcName + " " + cidrBlock,
 			`SET vpcId=tcpicli -f "{{range .Data}}{{.UnVpcID}}{{end}}" vpc DescribeVpcEx ` + region + " " + vpcName,
 			`DO echo $vpcId`,
 			// `DO tcpicli vpc CreateSubnet vpcId=$vpcId ` + region + " " + subnetCidr + " " + subnetName + " " + subnetZone,
@@ -117,6 +123,8 @@ func main() {
 			// `DO tcpicli vpc DeleteVpc vpcId=$vpcId ` + region,
 		},
 		FuncMap: map[string][]string{
+			"DescribeRegions": []string{"213/15708"},
+			"DescribeZones":   []string{"213/15707"},
 			"RunInstances": []string{"213/9384",
 				region,
 				version,
